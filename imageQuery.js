@@ -35,26 +35,48 @@ javascript:(function () {
             continue;
         }
 
-        let pseudoElement = document.createElement('div');
+        let imgFailElement = document.createElement('div');
 
-        pseudoElement.className = 'bookMarklet';
-        pseudoElement.textContent = 'X';
-        pseudoElement.style.backgroundColor = 'white';
-        pseudoElement.style.opacity = '.8';
-        pseudoElement.style.color = 'red';
-        pseudoElement.style.border = '2px, solid, red';
-        pseudoElement.style.padding = '3px';
-        pseudoElement.style.borderRadius = '3px';
-        pseudoElement.style.width = 'max-content';
+        imgFailElement.className = 'bookMarklet';
+        imgFailElement.textContent = 'X';
+        imgFailElement.style.backgroundColor = 'white';
+        imgFailElement.style.opacity = '.8';
+        imgFailElement.style.color = 'red';
+        imgFailElement.style.border = '2px, solid, red';
+        imgFailElement.style.padding = '3px';
+        imgFailElement.style.borderRadius = '3px';
+        imgFailElement.style.width = 'max-content';
 
-        pseudoElement.addEventListener('mouseover', () => {
+        imgFailElement.addEventListener('mouseover', () => {
             let infobox = document.createElement('div');
 
+            infobox.className = 'infoBox';
+
             infobox.textContent = 'test';
-            pseudoElement.after(infobox);
+            
+            infobox.style.position = 'absolute';
+            infobox.style.left = `${imgFailElement.getBoundingClientRect().right}px`;
+            infobox.style.backgroundColor = 'white';
+            infobox.style.opacity = '.8';
+            infobox.style.color = 'red';
+            infobox.style.border = '2px, solid, red';
+            infobox.style.padding = '3px';
+            infobox.style.borderRadius = '3px';
+            infobox.style.width = 'max-content';
+            imgFailElement.after(infobox);
         });
 
-        imgNodes[element].before(pseudoElement);
+        imgFailElement.addEventListener('mouseout', () => {
+            let infobox = document.querySelectorAll('.infoBox');
+
+            for (const element in infobox) {
+                console.log(infobox[element]);
+                infobox[element].remove();
+
+            }
+        });
+
+        imgNodes[element].before(imgFailElement);
         console.log('Image elements', imgNodes[element]);
     }
 
@@ -99,8 +121,8 @@ javascript:(function () {
 
             infobox.className = 'infoBox';
 
-            infobox.textContent = 'test';
-            
+            infobox.textContent = 'test 2';
+
             infobox.style.position = 'absolute';
             infobox.style.left = `${pseudoElement.getBoundingClientRect().right}px`;
             infobox.style.backgroundColor = 'white';
@@ -109,6 +131,7 @@ javascript:(function () {
             infobox.style.border = '2px, solid, red';
             infobox.style.padding = '3px';
             infobox.style.borderRadius = '3px';
+            infobox.style.width = 'max-content';
             pseudoElement.after(infobox);
         });
 
