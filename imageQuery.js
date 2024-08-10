@@ -19,19 +19,19 @@ javascript:(function () {
         let containsAriaLabel = imgNodes[element].getAttribute('aria-label');
 
         if ((containsAriaHidden === 'true') || containsAltText || containsAriaLabel) {
-            let pseudoElement = document.createElement('div');
+            let passElement = document.createElement('div');
 
-            pseudoElement.className = 'bookMarklet';
-            pseudoElement.textContent = 'Pass';
-            pseudoElement.style.backgroundColor = 'white';
-            pseudoElement.style.opacity = '.8';
-            pseudoElement.style.color = 'Green';
-            pseudoElement.style.border = '2px, solid, Green';
-            pseudoElement.style.padding = '3px';
-            pseudoElement.style.borderRadius = '3px';
-            pseudoElement.style.width = 'max-content';
+            passElement.className = 'bookMarklet';
+            passElement.textContent = 'Pass';
+            passElement.style.backgroundColor = 'white';
+            passElement.style.opacity = '.8';
+            passElement.style.color = 'Green';
+            passElement.style.border = '2px, solid, Green';
+            passElement.style.padding = '3px';
+            passElement.style.borderRadius = '3px';
+            passElement.style.width = 'max-content';
     
-            imgNodes[element].before(pseudoElement);
+            imgNodes[element].before(passElement);
             continue;
         }
 
@@ -59,19 +59,19 @@ javascript:(function () {
         let containsAriaLabel = nonImgNodes[element].getAttribute('aria-label');
 
         if ((containsAriaHidden === 'true') || containsAltText || containsAriaLabel) {
-            let pseudoElement = document.createElement('div');
+            let passElement = document.createElement('div');
 
-            pseudoElement.className = 'bookMarklet';
-            pseudoElement.textContent = 'Pass';
-            pseudoElement.style.backgroundColor = 'white';
-            pseudoElement.style.opacity = '.8';
-            pseudoElement.style.color = 'Green';
-            pseudoElement.style.border = '2px, solid, Green';
-            pseudoElement.style.padding = '3px';
-            pseudoElement.style.borderRadius = '3px';
-            pseudoElement.style.width = 'max-content';
+            passElement.className = 'bookMarklet';
+            passElement.textContent = 'Pass';
+            passElement.style.backgroundColor = 'white';
+            passElement.style.opacity = '.8';
+            passElement.style.color = 'Green';
+            passElement.style.border = '2px, solid, Green';
+            passElement.style.padding = '3px';
+            passElement.style.borderRadius = '3px';
+            passElement.style.width = 'max-content';
     
-            imgNodes[element].before(pseudoElement);
+            nonImgNodes[element].before(passElement);
             continue;
         }
 
