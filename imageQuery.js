@@ -12,6 +12,8 @@ javascript:(function () {
     const nonImgNodes = document.querySelectorAll("[role=img]");
 
     for (const element in imgNodes) {
+        if (element === 'entries') break;
+
         if (imgNodes[element].getAttribute('alt')) {
             continue;
         }
@@ -33,6 +35,8 @@ javascript:(function () {
     }
 
     for (const element in nonImgNodes) {
+        if (element === 'entries') break;
+
         if (nonImgNodes[element].getAttribute('alt')) {
             continue;
         }
