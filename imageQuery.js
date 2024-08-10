@@ -28,12 +28,12 @@ javascript:(function () {
         pseudoElement.style.borderRadius = '3px';
         pseudoElement.style.width = 'max-content';
 
-        nodes[element].before(pseudoElement);
-        console.log('Image elements', nodes[element]);
+        imgNodes[element].before(pseudoElement);
+        console.log('Image elements', imgNodes[element]);
     }
 
     for (const element in nonImgNodes) {
-        if (imgNodes[element].getAttribute('alt')) {
+        if (nonImgNodes[element].getAttribute('alt')) {
             continue;
         }
 
@@ -48,7 +48,7 @@ javascript:(function () {
         pseudoElement.style.padding = '3px';
         pseudoElement.style.borderRadius = '3px';
 
-        nodes[element].before(pseudoElement);
-        console.log('Not an image element', nodes[element]);
+        nonImgNodes[element].before(pseudoElement);
+        console.log('Not an image element', nonImgNodes[element]);
 }
 })();
