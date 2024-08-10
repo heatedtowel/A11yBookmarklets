@@ -14,12 +14,24 @@ javascript:(function () {
     for (const element in imgNodes) {
         if (element === 'entries') break;
 
-        containsAriaHidden = imgNodes[element].getAttribute('aria-hidden');
-        containsAltText = imgNodes[element].getAttribute('alt');
-        containsAriaLabel = imgNodes[element].getAttribute('aria-label');
+        let containsAriaHidden = imgNodes[element].getAttribute('aria-hidden');
+        let containsAltText = imgNodes[element].getAttribute('alt');
+        let containsAriaLabel = imgNodes[element].getAttribute('aria-label');
 
         if ((containsAriaHidden === 'true') || containsAltText || containsAriaLabel) {
-            console.log('continue');
+            let pseudoElement = document.createElement('div');
+
+            pseudoElement.className = 'bookMarklet';
+            pseudoElement.textContent = 'Pass';
+            pseudoElement.style.backgroundColor = 'white';
+            pseudoElement.style.opacity = '.8';
+            pseudoElement.style.color = 'Green';
+            pseudoElement.style.border = '2px, solid, Green';
+            pseudoElement.style.padding = '3px';
+            pseudoElement.style.borderRadius = '3px';
+            pseudoElement.style.width = 'max-content';
+    
+            imgNodes[element].before(pseudoElement);
             continue;
         }
 
@@ -42,12 +54,24 @@ javascript:(function () {
     for (const element in nonImgNodes) {
         if (element === 'entries') break;
 
-        containsAriaHidden = nonImgNodes[element].getAttribute('aria-hidden');
-        containsAltText = nonImgNodes[element].getAttribute('alt');
-        containsAriaLabel = nonImgNodes[element].getAttribute('aria-label');
+        let containsAriaHidden = nonImgNodes[element].getAttribute('aria-hidden');
+        let containsAltText = nonImgNodes[element].getAttribute('alt');
+        let containsAriaLabel = nonImgNodes[element].getAttribute('aria-label');
 
         if ((containsAriaHidden === 'true') || containsAltText || containsAriaLabel) {
-            console.log('continue');
+            let pseudoElement = document.createElement('div');
+
+            pseudoElement.className = 'bookMarklet';
+            pseudoElement.textContent = 'Pass';
+            pseudoElement.style.backgroundColor = 'white';
+            pseudoElement.style.opacity = '.8';
+            pseudoElement.style.color = 'Green';
+            pseudoElement.style.border = '2px, solid, Green';
+            pseudoElement.style.padding = '3px';
+            pseudoElement.style.borderRadius = '3px';
+            pseudoElement.style.width = 'max-content';
+    
+            imgNodes[element].before(pseudoElement);
             continue;
         }
 
