@@ -14,7 +14,12 @@ javascript:(function () {
     for (const element in imgNodes) {
         if (element === 'entries') break;
 
-        if (imgNodes[element].getAttribute('alt')) {
+        containsAriaHidden = imgNodes[element].getAttribute('aria-hidden');
+        containsAltText = imgNodes[element].getAttribute('alt');
+        containsAriaLabel = imgNodes[element].getAttribute('aria-label');
+
+        if ((containsAriaHidden === 'true') || containsAltText || containsAriaLabel) {
+            console.log('continue');
             continue;
         }
 
@@ -37,7 +42,12 @@ javascript:(function () {
     for (const element in nonImgNodes) {
         if (element === 'entries') break;
 
-        if (nonImgNodes[element].getAttribute('alt')) {
+        containsAriaHidden = nonImgNodes[element].getAttribute('aria-hidden');
+        containsAltText = nonImgNodes[element].getAttribute('alt');
+        containsAriaLabel = nonImgNodes[element].getAttribute('aria-label');
+
+        if ((containsAriaHidden === 'true') || containsAltText || containsAriaLabel) {
+            console.log('continue');
             continue;
         }
 
