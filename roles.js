@@ -23,6 +23,7 @@ javascript:(function () {
         pseudoElement.style.border = '2px, solid, red';
         pseudoElement.style.padding = '3px';
         pseudoElement.style.borderRadius = '3px';
+        pseudoElement.style.width = 'max-content';
 
         nodes[element].before(pseudoElement);
         console.log('role=', role, nodes[element]);

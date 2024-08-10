@@ -26,9 +26,10 @@ javascript:(function () {
         pseudoElement.style.border = '2px, solid, red';
         pseudoElement.style.padding = '3px';
         pseudoElement.style.borderRadius = '3px';
+        pseudoElement.style.width = 'max-content';
 
         nodes[element].before(pseudoElement);
-        console.log('imgNodes', nodes[element]);
+        console.log('Image elements', nodes[element]);
     }
 
     for (const element in nonImgNodes) {
@@ -48,6 +49,6 @@ javascript:(function () {
         pseudoElement.style.borderRadius = '3px';
 
         nodes[element].before(pseudoElement);
-        console.log('nonImgNodes', nodes[element]);
+        console.log('Not an image element', nodes[element]);
 }
 })();
