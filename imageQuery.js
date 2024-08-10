@@ -19,7 +19,7 @@ javascript:(function () {
         let pseudoElement = document.createElement('div');
 
         pseudoElement.className = 'bookMarklet';
-        pseudoElement.textContent = 'X';
+        pseudoElement.textContent = 'X - no role or alt text found';
         pseudoElement.style.backgroundColor = 'white';
         pseudoElement.style.opacity = '.8';
         pseudoElement.style.color = 'red';
@@ -39,7 +39,7 @@ javascript:(function () {
         let pseudoElement = document.createElement('div');
 
         pseudoElement.className = 'bookMarklet';
-        pseudoElement.textContent = 'X';
+        pseudoElement.textContent = 'X no alt text found';
         pseudoElement.style.backgroundColor = 'white';
         pseudoElement.style.opacity = '.8';
         pseudoElement.style.color = 'red';
