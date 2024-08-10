@@ -55,7 +55,7 @@ javascript:(function () {
             infobox.textContent = 'test';
             
             infobox.style.position = 'absolute';
-            infobox.style.left = `${imgFailElement.getBoundingClientRect().right}px`;
+            infobox.style.top = `${imgFailElement.getBoundingClientRect().bottom}px`;
             infobox.style.backgroundColor = 'white';
             infobox.style.opacity = '.8';
             infobox.style.color = 'red';
@@ -124,7 +124,7 @@ javascript:(function () {
             infobox.textContent = 'test 2';
 
             infobox.style.position = 'absolute';
-            infobox.style.left = `${pseudoElement.getBoundingClientRect().right}px`;
+            infobox.style.top = `${pseudoElement.getBoundingClientRect().bottom}px`;
             infobox.style.backgroundColor = 'white';
             infobox.style.opacity = '.8';
             infobox.style.color = 'red';
