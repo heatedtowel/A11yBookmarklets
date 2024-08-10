@@ -38,7 +38,7 @@ javascript:(function () {
         let pseudoElement = document.createElement('div');
 
         pseudoElement.className = 'bookMarklet';
-        pseudoElement.textContent = 'X - no role or alt text found';
+        pseudoElement.textContent = 'X';
         pseudoElement.style.backgroundColor = 'white';
         pseudoElement.style.opacity = '.8';
         pseudoElement.style.color = 'red';
@@ -46,6 +46,13 @@ javascript:(function () {
         pseudoElement.style.padding = '3px';
         pseudoElement.style.borderRadius = '3px';
         pseudoElement.style.width = 'max-content';
+
+        pseudoElement.addEventListener('mouseover', () => {
+            let infobox = document.createElement('div');
+
+            infobox.textContent = 'test';
+            pseudoElement.after(infobox);
+        });
 
         imgNodes[element].before(pseudoElement);
         console.log('Image elements', imgNodes[element]);
@@ -79,12 +86,41 @@ javascript:(function () {
 
         pseudoElement.className = 'bookMarklet';
         pseudoElement.textContent = 'X no alt text found';
+        pseudoElement.style.position = 'relative';
         pseudoElement.style.backgroundColor = 'white';
         pseudoElement.style.opacity = '.8';
         pseudoElement.style.color = 'red';
         pseudoElement.style.border = '2px, solid, red';
         pseudoElement.style.padding = '3px';
         pseudoElement.style.borderRadius = '3px';
+
+        pseudoElement.addEventListener('mouseover', () => {
+            let infobox = document.createElement('div');
+
+            infobox.className = 'infoBox';
+
+            infobox.textContent = 'test';
+            
+            infobox.style.position = 'absolute';
+            infobox.style.left = `${pseudoElement.getBoundingClientRect().right}px`;
+            infobox.style.backgroundColor = 'white';
+            infobox.style.opacity = '.8';
+            infobox.style.color = 'red';
+            infobox.style.border = '2px, solid, red';
+            infobox.style.padding = '3px';
+            infobox.style.borderRadius = '3px';
+            pseudoElement.after(infobox);
+        });
+
+        pseudoElement.addEventListener('mouseout', () => {
+            let infobox = document.querySelectorAll('.infoBox');
+
+            for (const element in infobox) {
+                console.log(infobox[element]);
+                infobox[element].remove();
+
+            }
+        });
 
         nonImgNodes[element].before(pseudoElement);
         console.log('Not an image element', nonImgNodes[element]);
