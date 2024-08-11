@@ -43,6 +43,9 @@ This is a collection of bookmarklets for quickly identifing accessibility issues
 <br>
 <br>
 I indent this to be open source and would like feedback and inputs on what you would like to see. Or if you have built one that you think would be useful here feel free to create a pull request. I would like this to become a robust set of tools that you can use both when debugging and creating components to ensure we make them accessible for all users.
+<br>
+<br>
+Active development is currently on the image query bookmarklet. While the other bookmarklets are completed and working. They are not as fleshed out at the moment as the image search. 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
