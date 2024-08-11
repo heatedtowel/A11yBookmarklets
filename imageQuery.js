@@ -51,7 +51,7 @@ javascript:(function () {
         let containsAriaLabel = imgNodes[element].getAttribute('aria-label');
 
         if ((containsAriaHidden === 'true') || containsAltText || containsAriaLabel) {
-            let passedImgElement = buildElement('div', 'green', 'Passed 1');
+            let passedImgElement = buildElement('div', 'green', 'Passed');
             let ariaHiddenElement = buildElement('p', 'green', 'aria-hidden=' + containsAriaHidden, 'passed-popOver');
             let altElement = buildElement('p', 'green', 'alt=' + containsAltText, 'passed-popOver');
             let ariaLabelElement = buildElement('p', 'green', 'aria-label=' + containsAriaLabel, 'passed-popOver');
@@ -102,7 +102,7 @@ javascript:(function () {
         let containsAriaLabel = nonImgNodes[element].getAttribute('aria-label');
 
         if ((containsAriaHidden === 'true') || containsAltText || containsAriaLabel) {
-            let passElement = buildElement('div', 'green', 'Passed 2', 'bookMarklet');
+            let passElement = buildElement('div', 'green', 'Passed', 'bookMarklet');
             let ariaHiddenElement = buildElement('p', 'green', 'aria-hidden=' + containsAriaHidden, 'passed-popOver');
             let altElement = buildElement('p', 'green', 'alt=' + containsAltText, 'passed-popOver');
             let ariaLabelElement = buildElement('p', 'green', 'aria-label=' + containsAriaLabel, 'passed-popOver');
