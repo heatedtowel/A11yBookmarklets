@@ -10,6 +10,8 @@ javascript:(function () {
     
     const imgNodes = document.querySelectorAll("img:not([role])");
     const nonImgNodes = document.querySelectorAll("[role=img]");
+    let passedElements = [];
+    let failedElements = [];
 
     const buildElement = (type, color, text, className = 'bookMarklet', backgroundColor = 'rgb(255, 255, 255, .6)') => {
         const newElement = document.createElement(`${type}`);
@@ -50,6 +52,7 @@ javascript:(function () {
         let containsAltText = imgNodes[element].getAttribute('alt');
         let containsAriaLabel = imgNodes[element].getAttribute('aria-label');
 
+
         if ((containsAriaHidden === 'true') || containsAltText || containsAriaLabel) {
             let passedImgElement = buildElement('div', 'green', 'Passed');
             let ariaHiddenElement = buildElement('p', 'green', 'aria-hidden=' + containsAriaHidden, 'passed-popOver');
@@ -71,8 +74,7 @@ javascript:(function () {
             });
 
             imgNodes[element].before(passedImgElement);
-            console.log('Passed Image element', imgNodes[element]);
-            continue;
+            passedElements.push(imgNodes[element]);
         }
 
         let imgFailElement = buildElement('div', 'red');
@@ -91,8 +93,9 @@ javascript:(function () {
         });
 
         imgNodes[element].before(imgFailElement);
-        console.log('Failed Image element', imgNodes[element]);
+        failedElements.push(imgNodes[element]);
     }
+
 
     for (const element in nonImgNodes) {
         if (element === 'entries') break;
@@ -122,8 +125,7 @@ javascript:(function () {
             });
     
             nonImgNodes[element].before(passElement);
-            console.log('Passed Non-Image element', nonImgNodes[element]);
-            continue;
+            passedElements.push(imgNodes[element]);
         }
 
         let failElement = buildElement('div', 'red', 'X', 'bookMarklet');
@@ -141,13 +143,28 @@ javascript:(function () {
             let infobox = document.querySelectorAll('.failed-popOver');
 
             for (const element in infobox) {
-                console.log(infobox[element]);
                 infobox[element].remove();
-
             }
         });
 
         nonImgNodes[element].before(failElement);
-        console.log('Failed Non-Image element', nonImgNodes[element]);
+        failedElements.push(imgNodes[element]);
+
+        console.log('Start of image query');
+        console.group('Passed Elements');
+
+        passedElements.map(element => {
+            console.log('Passed', element);
+        });
+
+        console.groupEnd();
+        console.group('Failed Elements');
+
+        failedElements.map(element => {
+            console.log('Failed', element);
+        });
+
+        console.groupEnd();
+        console.groupEnd();
 }
 })();
