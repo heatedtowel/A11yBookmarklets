@@ -1,15 +1,49 @@
 javascript:(function () {
-    const existingNodes = document.querySelectorAll(".bookMarklet");
+    const existingBookmarkletNodes = document.querySelectorAll(".bookMarklet");
 
-    if (existingNodes.length) {
-        for (const element in existingNodes) {
-            existingNodes[element].remove();
+    if (existingBookmarkletNodes.length) {
+        for (const element in existingBookmarkletNodes) {
+            existingBookmarkletNodes[element].remove();
         }
         return;
     }
     
     const imgNodes = document.querySelectorAll("img:not([role])");
     const nonImgNodes = document.querySelectorAll("[role=img]");
+
+    const buildElement = (type, color, className = 'bookMarklet') => {
+        const newElement = document.createElement(`${type}`);
+
+        newElement.className = `${className}`;
+        newElement.textContent = 'Pass';
+        newElement.style.backgroundColor = 'white';
+        newElement.style.opacity = '.8';
+        newElement.style.color = `${color}`;
+        newElement.style.border = '2px, solid, Green';
+        newElement.style.padding = '3px';
+        newElement.style.borderRadius = '3px';
+        newElement.style.width = 'max-content';
+
+        return newElement;
+    };
+
+    const buildPopOver = (type, color, text, className = 'bookMarklet') => {
+        const newElement = document.createElement(`${type}`);
+
+        newElement.className = `${className}`;
+        newElement.style.textContent = `${text}`;
+        newElement.style.position = 'absolute';
+        newElement.style.top = `${imgFailElement.getBoundingClientRect().bottom}px`;
+        newElement.style.backgroundColor = 'white';
+        newElement.style.opacity = '.8';
+        newElement.style.color = `${color}`;
+        newElement.style.border = '2px, solid, red';
+        newElement.style.padding = '3px';
+        newElement.style.borderRadius = '3px';
+        newElement.style.width = 'max-content';
+
+        return newElement;
+    };
 
     for (const element in imgNodes) {
         if (element === 'entries') break;
@@ -19,51 +53,19 @@ javascript:(function () {
         let containsAriaLabel = imgNodes[element].getAttribute('aria-label');
 
         if ((containsAriaHidden === 'true') || containsAltText || containsAriaLabel) {
-            let passElement = document.createElement('div');
+            let passElement = buildElement('div', 'green');
+        console.log(passElement);
 
-            passElement.className = 'bookMarklet';
-            passElement.textContent = 'Pass';
-            passElement.style.backgroundColor = 'white';
-            passElement.style.opacity = '.8';
-            passElement.style.color = 'Green';
-            passElement.style.border = '2px, solid, Green';
-            passElement.style.padding = '3px';
-            passElement.style.borderRadius = '3px';
-            passElement.style.width = 'max-content';
-    
             imgNodes[element].before(passElement);
             continue;
         }
 
-        let imgFailElement = document.createElement('div');
-
-        imgFailElement.className = 'bookMarklet';
-        imgFailElement.textContent = 'X';
-        imgFailElement.style.backgroundColor = 'white';
-        imgFailElement.style.opacity = '.8';
-        imgFailElement.style.color = 'red';
-        imgFailElement.style.border = '2px, solid, red';
-        imgFailElement.style.padding = '3px';
-        imgFailElement.style.borderRadius = '3px';
-        imgFailElement.style.width = 'max-content';
+        let imgFailElement = buildElement('div', 'red');
+        console.log(imgFailElement);
 
         imgFailElement.addEventListener('mouseover', () => {
-            let infobox = document.createElement('div');
-
-            infobox.className = 'infoBox';
-
-            infobox.textContent = 'test';
-            
-            infobox.style.position = 'absolute';
-            infobox.style.top = `${imgFailElement.getBoundingClientRect().bottom}px`;
-            infobox.style.backgroundColor = 'white';
-            infobox.style.opacity = '.8';
-            infobox.style.color = 'red';
-            infobox.style.border = '2px, solid, red';
-            infobox.style.padding = '3px';
-            infobox.style.borderRadius = '3px';
-            infobox.style.width = 'max-content';
-            imgFailElement.after(infobox);
+            let infoBox = buildPopOver('div', 'red');
+            imgFailElement.after(infoBox);
         });
 
         imgFailElement.addEventListener('mouseout', () => {
@@ -91,7 +93,7 @@ javascript:(function () {
             let passElement = document.createElement('div');
 
             passElement.className = 'bookMarklet';
-            passElement.textContent = 'Pass';
+            passElement.textContent = 'Passed';
             passElement.style.backgroundColor = 'white';
             passElement.style.opacity = '.8';
             passElement.style.color = 'Green';
