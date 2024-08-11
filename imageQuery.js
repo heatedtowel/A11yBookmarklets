@@ -1,8 +1,8 @@
 javascript:(function () {
     const existingBookmarkletNodes = document.querySelectorAll(".bookMarklet");
-
     if (existingBookmarkletNodes.length) {
         for (const element in existingBookmarkletNodes) {
+            if (element === 'entries') break;
             existingBookmarkletNodes[element].remove();
         }
         return;
@@ -51,33 +51,31 @@ javascript:(function () {
         let containsAriaLabel = imgNodes[element].getAttribute('aria-label');
 
         if ((containsAriaHidden === 'true') || containsAltText || containsAriaLabel) {
-            let passElement = buildElement('div', 'green', 'Passed');
+            let passedImgElement = buildElement('div', 'green', 'Passed 1');
             let ariaHiddenElement = buildElement('p', 'green', 'aria-hidden=' + containsAriaHidden, 'passed-popOver');
             let altElement = buildElement('p', 'green', 'alt=' + containsAltText, 'passed-popOver');
             let ariaLabelElement = buildElement('p', 'green', 'aria-label=' + containsAriaLabel, 'passed-popOver');
 
-            passElement.addEventListener('mouseover', () => {
-                passElement.appendChild(ariaHiddenElement);
-                passElement.appendChild(altElement);
-                passElement.appendChild(ariaLabelElement);
+            passedImgElement.addEventListener('mouseover', () => {
+                passedImgElement.appendChild(ariaHiddenElement);
+                passedImgElement.appendChild(altElement);
+                passedImgElement.appendChild(ariaLabelElement);
             });
 
-            passElement.addEventListener('mouseout', () => {
+            passedImgElement.addEventListener('mouseout', () => {
                 let elementsToRemove = document.querySelectorAll('.passed-popOver');
-    
+
                 for (const element in elementsToRemove) {
-                    console.log(elementsToRemove[element]);
                     elementsToRemove[element].remove();
-    
                 }
             });
 
-            imgNodes[element].before(passElement);
+            imgNodes[element].before(passedImgElement);
+            console.log('Passed Image element', imgNodes[element]);
             continue;
         }
 
         let imgFailElement = buildElement('div', 'red');
-        console.log(imgFailElement);
 
         imgFailElement.addEventListener('mouseover', () => {
             let infoBox = buildPopOver('div', 'red');
@@ -88,14 +86,12 @@ javascript:(function () {
             let infobox = document.querySelectorAll('.infoBox');
 
             for (const element in infobox) {
-                console.log(infobox[element]);
                 infobox[element].remove();
-
             }
         });
 
         imgNodes[element].before(imgFailElement);
-        console.log('Image elements', imgNodes[element]);
+        console.log('Failed Image element', imgNodes[element]);
     }
 
     for (const element in nonImgNodes) {
@@ -106,7 +102,7 @@ javascript:(function () {
         let containsAriaLabel = nonImgNodes[element].getAttribute('aria-label');
 
         if ((containsAriaHidden === 'true') || containsAltText || containsAriaLabel) {
-            let passElement = buildElement('div', 'green', 'Passed', 'bookMarklet');
+            let passElement = buildElement('div', 'green', 'Passed 2', 'bookMarklet');
             let ariaHiddenElement = buildElement('p', 'green', 'aria-hidden=' + containsAriaHidden, 'passed-popOver');
             let altElement = buildElement('p', 'green', 'alt=' + containsAltText, 'passed-popOver');
             let ariaLabelElement = buildElement('p', 'green', 'aria-label=' + containsAriaLabel, 'passed-popOver');
@@ -121,13 +117,12 @@ javascript:(function () {
                 let elementsToRemove = document.querySelectorAll('.passed-popOver');
     
                 for (const element in elementsToRemove) {
-                    console.log(elementsToRemove[element]);
                     elementsToRemove[element].remove();
-    
                 }
             });
     
             nonImgNodes[element].before(passElement);
+            console.log('Passed Non-Image element', nonImgNodes[element]);
             continue;
         }
 
@@ -153,6 +148,6 @@ javascript:(function () {
         });
 
         nonImgNodes[element].before(failElement);
-        console.log('Not an image element', nonImgNodes[element]);
+        console.log('Failed Non-Image element', nonImgNodes[element]);
 }
 })();
