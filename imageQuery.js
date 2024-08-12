@@ -1,15 +1,18 @@
 javascript:(function () {
     const existingBookmarkletNodes = document.querySelectorAll(".bookMarklet");
+    
     if (existingBookmarkletNodes.length) {
         for (const element in existingBookmarkletNodes) {
             if (element === 'entries') break;
             existingBookmarkletNodes[element].remove();
         }
+        console.log('All elements have been cleared.');
         return;
     }
     
     const imgNodes = document.querySelectorAll("img:not([role])");
     const nonImgNodes = document.querySelectorAll("[role=img]");
+
     let passedImgElements = [];
     let passedNonImgElements = [];
     let failedImgElements = [];
@@ -31,20 +34,20 @@ javascript:(function () {
     };
 
     const buildPopOver = (type, color, text,  className = 'bookMarklet', backgroundColor = 'rgb(255, 255, 255, .6)') => {
-        const newElement = document.createElement(`${type}`);
+        const newPopOver = document.createElement(`${type}`);
 
-        newElement.className = `${className}`;
-        newElement.style.textContent = `${text}`;
-        newElement.style.position = 'absolute';
-        newElement.style.top = `${imgFailElement.getBoundingClientRect().bottom}px`;
-        newElement.style.backgroundColor = `${backgroundColor}`;
-        newElement.style.color = `${color}`;
-        newElement.style.border = '2px, solid, red';
-        newElement.style.padding = '3px';
-        newElement.style.borderRadius = '3px';
-        newElement.style.width = 'max-content';
+        newPopOver.className = `${className}`;
+        newPopOver.textContent = `${text}`;
+        newPopOver.style.position = 'absolute';
+        newPopOver.style.top = `${imgFailElement.getBoundingClientRect().bottom}px`;
+        newPopOver.style.backgroundColor = `${backgroundColor}`;
+        newPopOver.style.color = `${color}`;
+        newPopOver.style.border = '2px, solid, red';
+        newPopOver.style.padding = '3px';
+        newPopOver.style.borderRadius = '3px';
+        newPopOver.style.width = 'max-content';
 
-        return newElement;
+        return newPopOver;
     };
 
     for (const element in imgNodes) {
@@ -79,18 +82,22 @@ javascript:(function () {
             passedImgElements.push(imgNodes[element]);
         }
         else {
-            let imgFailElement = buildElement('div', 'red');
+            let imgFailElement = buildElement('div', 'red', 'X', 'bookMarklet');
+            let ariaHiddenElement = buildElement('p', 'red', 'aria-hidden=' + containsAriaHidden, 'failed-popOver');
+            let altElement = buildElement('p', 'red', 'alt=' + containsAltText, 'failed-popOver');
+            let ariaLabelElement = buildElement('p', 'red', 'aria-label=' + containsAriaLabel, 'failed-popOver');
     
             imgFailElement.addEventListener('mouseover', () => {
-                let infoBox = buildPopOver('div', 'red');
-                imgFailElement.after(infoBox);
+                imgFailElement.appendChild(ariaHiddenElement);
+                imgFailElement.appendChild(altElement);
+                imgFailElement.appendChild(ariaLabelElement);
             });
     
             imgFailElement.addEventListener('mouseout', () => {
-                let infobox = document.querySelectorAll('.infoBox');
+                let elememtsToRemove = document.querySelectorAll('.failed-popOver');
     
-                for (const element in infobox) {
-                    infobox[element].remove();
+                for (const element in elememtsToRemove) {
+                    elememtsToRemove[element].remove();
                 }
             });
     
