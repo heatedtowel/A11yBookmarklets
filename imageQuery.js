@@ -158,39 +158,56 @@ javascript:(function () {
 
         console.groupCollapsed('Passed Image Elements');
         
+        if (passedImgElements.length != 0) {
         passedImgElements.map(element => {
             console.log('Passed', element);
         });
+        }
+        else {
+            console.log('All image elements have failed');
+        }
 
         console.groupEnd();
-
         console.groupCollapsed('Failed Image Elements');
 
+        if (failedImgElements.length != 0) {
         failedImgElements.map(element => {
             console.log('Failed', element);
         });
+        }
+        else {
+            console.log('All image elements have Passed');
+        }
 
         console.groupEnd();
         console.groupEnd();
-
         console.group('Non Image Elements');
-
         console.groupCollapsed('Passed Non Image Elements');
 
+        if (passedNonImgElements.length != 0) {
         passedNonImgElements.map(element => {
             console.log('Passed', element);
         });
+        }
+        else {
+            console.log('All non image elements have failed');
+        };
 
         console.groupEnd();
-
         console.groupCollapsed('Failed Non Image Elements');
 
+        if (failedNonImgElements.length != 0) {
         failedNonImgElements.map(element => {
             console.log('Failed', element);
         });
+        }
+        else {
+            console.log('All non image elements have Passed');
+        };
 
         console.groupEnd();
         console.groupEnd();
         return;
-}
+    }
+    return;
 })();
