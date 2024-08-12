@@ -109,7 +109,7 @@ javascript:(function () {
                     }
                 });
 
-                currentElement.before(passedImgElement);
+                currentElement.after(passedImgElement);
                 passedImgElements.push(currentElement);
             }
             else {
@@ -136,7 +136,7 @@ javascript:(function () {
                     }
                 });
         
-                currentElement.before(imgFailElement);
+                currentElement.after(imgFailElement);
                 failedImgElements.push(currentElement);
             }
         }
@@ -173,7 +173,7 @@ javascript:(function () {
                     }
                 });
         
-                currentElement.before(passElement);
+                currentElement.after(passElement);
                 passedNonImgElements.push(currentElement);
             }
             else {
@@ -200,7 +200,7 @@ javascript:(function () {
                     }
                 });
         
-                currentElement.before(failElement);
+                currentElement.after(failElement);
                 failedNonImgElements.push(currentElement);
             }
 
