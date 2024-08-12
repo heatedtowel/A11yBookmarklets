@@ -18,31 +18,29 @@ javascript:(function () {
     let failedImgElements = [];
     let failedNonImgElements = [];
 
-    const buildElement = (type, color, text, className = 'bookMarklet', backgroundColor = 'rgb(255, 255, 255, .6)') => {
+    const buildElement = (type, color, text, className = 'bookMarklet', backgroundColor = 'rgb(255, 255, 255, .8)') => {
         const newElement = document.createElement(`${type}`);
 
         newElement.className = `${className}`;
         newElement.textContent = `${text}`;
+        newElement.style.position = 'relative';
         newElement.style.backgroundColor = `${backgroundColor}`;
         newElement.style.color = `${color}`;
         newElement.style.border = '2px, solid, Green';
         newElement.style.padding = '3px';
         newElement.style.borderRadius = '3px';
         newElement.style.width = 'max-content';
+        newElement.style.zIndex = '99';
 
         return newElement;
     };
 
-    const buildPopOver = (type, color, text,  className = 'bookMarklet', backgroundColor = 'rgb(255, 255, 255, .6)') => {
+    const buildAdditionalInfo = (type, color, text,  className = 'bookMarklet') => {
         const newPopOver = document.createElement(`${type}`);
 
         newPopOver.className = `${className}`;
         newPopOver.textContent = `${text}`;
-        newPopOver.style.position = 'absolute';
-        newPopOver.style.top = `${imgFailElement.getBoundingClientRect().bottom}px`;
-        newPopOver.style.backgroundColor = `${backgroundColor}`;
         newPopOver.style.color = `${color}`;
-        newPopOver.style.border = '2px, solid, red';
         newPopOver.style.padding = '3px';
         newPopOver.style.borderRadius = '3px';
         newPopOver.style.width = 'max-content';
@@ -53,24 +51,30 @@ javascript:(function () {
     for (const element in imgNodes) {
         if (element === 'entries') break;
 
-        let containsAriaHidden = imgNodes[element].getAttribute('aria-hidden');
-        let containsAltText = imgNodes[element].getAttribute('alt');
-        let containsAriaLabel = imgNodes[element].getAttribute('aria-label');
+        let currentElement = imgNodes[element];
+
+        let containsAriaHidden = currentElement.getAttribute('aria-hidden');
+        let containsAltText = currentElement.getAttribute('alt');
+        let containsAriaLabel = currentElement.getAttribute('aria-label');
 
 
         if ((containsAriaHidden === 'true') || containsAltText || containsAriaLabel) {
             let passedImgElement = buildElement('div', 'green', 'Passed');
-            let ariaHiddenElement = buildElement('p', 'green', 'aria-hidden=' + containsAriaHidden, 'passed-popOver');
-            let altElement = buildElement('p', 'green', 'alt=' + containsAltText, 'passed-popOver');
-            let ariaLabelElement = buildElement('p', 'green', 'aria-label=' + containsAriaLabel, 'passed-popOver');
+            let ariaHiddenElement = buildAdditionalInfo('p', 'green', 'aria-hidden=' + containsAriaHidden, 'passed-popOver');
+            let altElement = buildAdditionalInfo('p', 'green', 'alt=' + containsAltText, 'passed-popOver');
+            let ariaLabelElement = buildAdditionalInfo('p', 'green', 'aria-label=' + containsAriaLabel, 'passed-popOver');
 
-            passedImgElement.addEventListener('mouseover', () => {
+            passedImgElement.addEventListener('mouseenter', () => {
+                currentElement.style.border = '2px, solid, yellow';
+
                 passedImgElement.appendChild(ariaHiddenElement);
                 passedImgElement.appendChild(altElement);
                 passedImgElement.appendChild(ariaLabelElement);
             });
 
-            passedImgElement.addEventListener('mouseout', () => {
+            passedImgElement.addEventListener('mouseleave', () => {
+                currentElement.style.border = 'initial';
+
                 let elementsToRemove = document.querySelectorAll('.passed-popOver');
 
                 for (const element in elementsToRemove) {
@@ -78,22 +82,26 @@ javascript:(function () {
                 }
             });
 
-            imgNodes[element].before(passedImgElement);
-            passedImgElements.push(imgNodes[element]);
+            currentElement.before(passedImgElement);
+            passedImgElements.push(currentElement);
         }
         else {
             let imgFailElement = buildElement('div', 'red', 'X', 'bookMarklet');
-            let ariaHiddenElement = buildElement('p', 'red', 'aria-hidden=' + containsAriaHidden, 'failed-popOver');
-            let altElement = buildElement('p', 'red', 'alt=' + containsAltText, 'failed-popOver');
-            let ariaLabelElement = buildElement('p', 'red', 'aria-label=' + containsAriaLabel, 'failed-popOver');
+            let ariaHiddenElement = buildAdditionalInfo('p', 'red', 'aria-hidden=' + containsAriaHidden, 'failed-popOver');
+            let altElement = buildAdditionalInfo('p', 'red', 'alt=' + containsAltText, 'failed-popOver');
+            let ariaLabelElement = buildAdditionalInfo('p', 'red', 'aria-label=' + containsAriaLabel, 'failed-popOver');
     
-            imgFailElement.addEventListener('mouseover', () => {
+            imgFailElement.addEventListener('mouseenter', () => {
+                currentElement.style.border = '2px, solid, yellow';
+
                 imgFailElement.appendChild(ariaHiddenElement);
                 imgFailElement.appendChild(altElement);
                 imgFailElement.appendChild(ariaLabelElement);
             });
     
-            imgFailElement.addEventListener('mouseout', () => {
+            imgFailElement.addEventListener('mouseleave', () => {
+                currentElement.style.border = 'initial';
+
                 let elememtsToRemove = document.querySelectorAll('.failed-popOver');
     
                 for (const element in elememtsToRemove) {
@@ -101,31 +109,36 @@ javascript:(function () {
                 }
             });
     
-            imgNodes[element].before(imgFailElement);
-            failedImgElements.push(imgNodes[element]);
+            currentElement.before(imgFailElement);
+            failedImgElements.push(currentElement);
         }
     }
 
     for (const element in nonImgNodes) {
         if (element === 'entries') break;
 
-        let containsAriaHidden = nonImgNodes[element].getAttribute('aria-hidden');
-        let containsAltText = nonImgNodes[element].getAttribute('alt');
-        let containsAriaLabel = nonImgNodes[element].getAttribute('aria-label');
+        let currentElement = nonImgNodes[element];
+        let containsAriaHidden = currentElement.getAttribute('aria-hidden');
+        let containsAltText = currentElement.getAttribute('alt');
+        let containsAriaLabel = currentElement.getAttribute('aria-label');
 
         if ((containsAriaHidden === 'true') || containsAltText || containsAriaLabel) {
             let passElement = buildElement('div', 'green', 'Passed', 'bookMarklet');
-            let ariaHiddenElement = buildElement('p', 'green', 'aria-hidden=' + containsAriaHidden, 'passed-popOver');
-            let altElement = buildElement('p', 'green', 'alt=' + containsAltText, 'passed-popOver');
-            let ariaLabelElement = buildElement('p', 'green', 'aria-label=' + containsAriaLabel, 'passed-popOver');
+            let ariaHiddenElement = buildAdditionalInfo('p', 'green', 'aria-hidden=' + containsAriaHidden, 'passed-popOver');
+            let altElement = buildAdditionalInfo('p', 'green', 'alt=' + containsAltText, 'passed-popOver');
+            let ariaLabelElement = buildAdditionalInfo('p', 'green', 'aria-label=' + containsAriaLabel, 'passed-popOver');
 
-            passElement.addEventListener('mouseover', () => {
+            passElement.addEventListener('mouseenter', () => {
+                currentElement.style.border = '2px, solid, yellow';
+
                 passElement.appendChild(ariaHiddenElement);
                 passElement.appendChild(altElement);
                 passElement.appendChild(ariaLabelElement);
             });
 
-            passElement.addEventListener('mouseout', () => {
+            passElement.addEventListener('mouseleave', () => {
+                currentElement.style.border = 'initial';
+
                 let elementsToRemove = document.querySelectorAll('.passed-popOver');
     
                 for (const element in elementsToRemove) {
@@ -133,22 +146,26 @@ javascript:(function () {
                 }
             });
     
-            nonImgNodes[element].before(passElement);
-            passedNonImgElements.push(imgNodes[element]);
+            currentElement.before(passElement);
+            passedNonImgElements.push(currentElement);
         }
         else {
             let failElement = buildElement('div', 'red', 'X', 'bookMarklet');
-            let ariaHiddenElement = buildElement('p', 'red', 'aria-hidden=' + containsAriaHidden, 'failed-popOver');
-            let altElement = buildElement('p', 'red', 'alt=' + containsAltText, 'failed-popOver');
-            let ariaLabelElement = buildElement('p', 'red', 'aria-label=' + containsAriaLabel, 'failed-popOver');
+            let ariaHiddenElement = buildAdditionalInfo('p', 'red', 'aria-hidden=' + containsAriaHidden, 'failed-popOver');
+            let altElement = buildAdditionalInfo('p', 'red', 'alt=' + containsAltText, 'failed-popOver');
+            let ariaLabelElement = buildAdditionalInfo('p', 'red', 'aria-label=' + containsAriaLabel, 'failed-popOver');
     
-            failElement.addEventListener('mouseover', () => {
+            failElement.addEventListener('mouseenter', () => {
+                currentElement.style.border = '2px, solid, yellow';
+
                 failElement.appendChild(ariaHiddenElement);
                 failElement.appendChild(altElement);
                 failElement.appendChild(ariaLabelElement);
             });
     
-            failElement.addEventListener('mouseout', () => {
+            failElement.addEventListener('mouseleave', () => {
+                currentElement.style.border = 'initial';
+
                 let infobox = document.querySelectorAll('.failed-popOver');
     
                 for (const element in infobox) {
@@ -156,13 +173,12 @@ javascript:(function () {
                 }
             });
     
-            nonImgNodes[element].before(failElement);
-            failedNonImgElements.push(imgNodes[element]);
+            currentElement.before(failElement);
+            failedNonImgElements.push(currentElement);
         }
 
         console.log('Start of image query');
         console.group('Image Elements');
-
         console.groupCollapsed('Passed Image Elements');
         
         if (passedImgElements.length != 0) {
@@ -171,7 +187,7 @@ javascript:(function () {
         });
         }
         else {
-            console.log('All image elements have failed');
+            console.log('No Elements to display');
         }
 
         console.groupEnd();
@@ -183,7 +199,7 @@ javascript:(function () {
         });
         }
         else {
-            console.log('All image elements have Passed');
+            console.log('No Elements to display');
         }
 
         console.groupEnd();
@@ -197,7 +213,7 @@ javascript:(function () {
         });
         }
         else {
-            console.log('All non image elements have failed');
+            console.log('No Elements to display');
         };
 
         console.groupEnd();
@@ -209,7 +225,7 @@ javascript:(function () {
         });
         }
         else {
-            console.log('All non image elements have Passed');
+            console.log('No Elements to display');
         };
 
         console.groupEnd();
