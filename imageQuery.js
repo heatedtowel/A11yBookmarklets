@@ -10,8 +10,10 @@ javascript:(function () {
     
     const imgNodes = document.querySelectorAll("img:not([role])");
     const nonImgNodes = document.querySelectorAll("[role=img]");
-    let passedElements = [];
-    let failedElements = [];
+    let passedImgElements = [];
+    let passedNonImgElements = [];
+    let failedImgElements = [];
+    let failedNonImgElements = [];
 
     const buildElement = (type, color, text, className = 'bookMarklet', backgroundColor = 'rgb(255, 255, 255, .6)') => {
         const newElement = document.createElement(`${type}`);
@@ -74,28 +76,28 @@ javascript:(function () {
             });
 
             imgNodes[element].before(passedImgElement);
-            passedElements.push(imgNodes[element]);
+            passedImgElements.push(imgNodes[element]);
         }
-
-        let imgFailElement = buildElement('div', 'red');
-
-        imgFailElement.addEventListener('mouseover', () => {
-            let infoBox = buildPopOver('div', 'red');
-            imgFailElement.after(infoBox);
-        });
-
-        imgFailElement.addEventListener('mouseout', () => {
-            let infobox = document.querySelectorAll('.infoBox');
-
-            for (const element in infobox) {
-                infobox[element].remove();
-            }
-        });
-
-        imgNodes[element].before(imgFailElement);
-        failedElements.push(imgNodes[element]);
+        else {
+            let imgFailElement = buildElement('div', 'red');
+    
+            imgFailElement.addEventListener('mouseover', () => {
+                let infoBox = buildPopOver('div', 'red');
+                imgFailElement.after(infoBox);
+            });
+    
+            imgFailElement.addEventListener('mouseout', () => {
+                let infobox = document.querySelectorAll('.infoBox');
+    
+                for (const element in infobox) {
+                    infobox[element].remove();
+                }
+            });
+    
+            imgNodes[element].before(imgFailElement);
+            failedImgElements.push(imgNodes[element]);
+        }
     }
-
 
     for (const element in nonImgNodes) {
         if (element === 'entries') break;
@@ -125,46 +127,70 @@ javascript:(function () {
             });
     
             nonImgNodes[element].before(passElement);
-            passedElements.push(imgNodes[element]);
+            passedNonImgElements.push(imgNodes[element]);
+        }
+        else {
+            let failElement = buildElement('div', 'red', 'X', 'bookMarklet');
+            let ariaHiddenElement = buildElement('p', 'red', 'aria-hidden=' + containsAriaHidden, 'failed-popOver');
+            let altElement = buildElement('p', 'red', 'alt=' + containsAltText, 'failed-popOver');
+            let ariaLabelElement = buildElement('p', 'red', 'aria-label=' + containsAriaLabel, 'failed-popOver');
+    
+            failElement.addEventListener('mouseover', () => {
+                failElement.appendChild(ariaHiddenElement);
+                failElement.appendChild(altElement);
+                failElement.appendChild(ariaLabelElement);
+            });
+    
+            failElement.addEventListener('mouseout', () => {
+                let infobox = document.querySelectorAll('.failed-popOver');
+    
+                for (const element in infobox) {
+                    infobox[element].remove();
+                }
+            });
+    
+            nonImgNodes[element].before(failElement);
+            failedNonImgElements.push(imgNodes[element]);
         }
 
-        let failElement = buildElement('div', 'red', 'X', 'bookMarklet');
-        let ariaHiddenElement = buildElement('p', 'red', 'aria-hidden=' + containsAriaHidden, 'failed-popOver');
-        let altElement = buildElement('p', 'red', 'alt=' + containsAltText, 'failed-popOver');
-        let ariaLabelElement = buildElement('p', 'red', 'aria-label=' + containsAriaLabel, 'failed-popOver');
-
-        failElement.addEventListener('mouseover', () => {
-            failElement.appendChild(ariaHiddenElement);
-            failElement.appendChild(altElement);
-            failElement.appendChild(ariaLabelElement);
-        });
-
-        failElement.addEventListener('mouseout', () => {
-            let infobox = document.querySelectorAll('.failed-popOver');
-
-            for (const element in infobox) {
-                infobox[element].remove();
-            }
-        });
-
-        nonImgNodes[element].before(failElement);
-        failedElements.push(imgNodes[element]);
-
         console.log('Start of image query');
-        console.group('Passed Elements');
+        console.group('Image Elements');
 
-        passedElements.map(element => {
+        console.groupCollapsed('Passed Image Elements');
+        
+        passedImgElements.map(element => {
             console.log('Passed', element);
         });
 
         console.groupEnd();
-        console.group('Failed Elements');
 
-        failedElements.map(element => {
+        console.groupCollapsed('Failed Image Elements');
+
+        failedImgElements.map(element => {
             console.log('Failed', element);
         });
 
         console.groupEnd();
         console.groupEnd();
+
+        console.group('Non Image Elements');
+
+        console.groupCollapsed('Passed Non Image Elements');
+
+        passedNonImgElements.map(element => {
+            console.log('Passed', element);
+        });
+
+        console.groupEnd();
+
+        console.groupCollapsed('Failed Non Image Elements');
+
+        failedNonImgElements.map(element => {
+            console.log('Failed', element);
+        });
+
+        console.groupEnd();
+        console.groupEnd();
+        return;
 }
 })();
