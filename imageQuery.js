@@ -19,7 +19,6 @@ javascript:(function () {
 
         newElement.className = `${className}`;
         newElement.innerHTML = `${text}`;
-        newElement.style.position = 'relative';
         newElement.style.backgroundColor = `${backgroundColor}`;
         newElement.style.color = `${color}`;
         newElement.style.border = '2px, solid, Green';
