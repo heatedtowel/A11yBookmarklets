@@ -296,7 +296,6 @@ javascript:(function () {
     };
 
     const startScan = (elementType) => {
-        console.log(elementType);
         if (elementType === 'Images') {
             queryImages();
             logResults();
