@@ -49,7 +49,7 @@ javascript:(function () {
 
         let overlay = document.createElement('div');
         overlay.className = 'bookMarklet';
-        overlay.style.position = 'absolute';
+        overlay.style.position = 'fixed';
         overlay.style.top = '20%';
         overlay.style.left = '35%';
         overlay.style.width = '30%';
