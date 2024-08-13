@@ -6,15 +6,14 @@ javascript:(function () {
         return;
     }
     
-    const focusableNodes = document.querySelectorAll('a, button, input, select');
+    const focusableNodes = document.querySelectorAll('a, button, input, textarea, select, div[role=button], div[role=link], div[role=tab], div[role=tabpanel]');
     var currentlyFocusedElement;
 
-    window.addEventListener('keydown', function(e){
+    window.addEventListener('keyup', function(e){
         if(e.key == "Tab" && focusableNodes.length){
-            for (const focusableNode of focusableNodes) {
-                currentlyFocusedElement = document.activeElement;
-                if(currentlyFocusedElement == focusableNode){
-                    console.log("focused element:" + focusableNode.tagName);
+            for (const fn of focusableNodes) {
+                if(document.activeElement == fn){
+                    console.log("Focused element: ", fn);
                 }
             }
         }
