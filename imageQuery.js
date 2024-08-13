@@ -111,9 +111,8 @@ javascript:(function () {
             let currentElement = imgNodes[element];
 
             let containsAriaHidden = currentElement.getAttribute('aria-hidden');
-            let containsAltText = currentElement.getAttribute('alt');
+            let containsAltText = currentElement.hasAttribute('alt');
             let containsAriaLabel = currentElement.getAttribute('aria-label');
-
 
             if ((containsAriaHidden === 'true') || containsAltText || containsAriaLabel) {
                 let passedImgElement = buildElement('div', 'green', '&#9432');
@@ -182,7 +181,7 @@ javascript:(function () {
 
             let currentElement = nonImgNodes[element];
             let containsAriaHidden = currentElement.getAttribute('aria-hidden');
-            let containsAltText = currentElement.getAttribute('alt');
+            let containsAltText = currentElement.hasAttribute('alt');
             let containsAriaLabel = currentElement.getAttribute('aria-label');
 
             if ((containsAriaHidden === 'true') || containsAltText || containsAriaLabel) {
