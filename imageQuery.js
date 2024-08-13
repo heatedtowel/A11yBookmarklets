@@ -1,22 +1,18 @@
 javascript:(function () {
-    const existingBookmarkletNodes = document.querySelectorAll(".bookMarklet");
     
-    if (existingBookmarkletNodes.length) {
-        for (const element in existingBookmarkletNodes) {
-            if (element === 'entries') break;
-            existingBookmarkletNodes[element].remove();
+    const checkForExistingBookmarklets = () => {
+        const existingBookmarkletNodes = document.querySelectorAll(".bookMarklet");
+        
+        if (existingBookmarkletNodes.length) {
+            for (const element in existingBookmarkletNodes) {
+                if (element === 'entries') break;
+                existingBookmarkletNodes[element].remove();
+            }
+            console.log('All elements have been cleared.');
+            return;
         }
-        console.log('All elements have been cleared.');
-        return;
-    }
-    
-    const imgNodes = document.querySelectorAll("img:not([role])");
-    const nonImgNodes = document.querySelectorAll("[role=img]");
-
-    let passedImgElements = [];
-    let passedNonImgElements = [];
-    let failedImgElements = [];
-    let failedNonImgElements = [];
+        displayOverlay();
+    };
 
     const buildElement = (type, color, text, className = 'bookMarklet', backgroundColor = 'rgb(255, 255, 255, .8)') => {
         const newElement = document.createElement(`${type}`);
@@ -106,6 +102,10 @@ javascript:(function () {
     };
 
     const queryImages = () => {
+        const imgNodes = document.querySelectorAll("img:not([role])");
+        let passedImgElements = [];
+        let failedImgElements = [];
+
         for (const element in imgNodes) {
             if (element === 'entries') break;
 
@@ -174,6 +174,10 @@ javascript:(function () {
     };
 
     const queryNonImages = () => {
+        const nonImgNodes = document.querySelectorAll("[role=img]");
+        let passedNonImgElements = [];
+        let failedNonImgElements = [];
+
         for (const element in nonImgNodes) {
             if (element === 'entries') break;
 
@@ -313,5 +317,5 @@ javascript:(function () {
         }
     };
 
-    displayOverlay();
+    checkForExistingBookmarklets();
 })();
