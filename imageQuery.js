@@ -49,32 +49,63 @@ javascript:(function () {
     };
 
     const displayOverlay = () => {
+        let options = ['Images', 'Elements with role = image', 'All'];
+
         let overlay = document.createElement('div');
+        overlay.className = 'bookMarklet';
         overlay.style.position = 'absolute';
-        overlay.style.top = '30%';
-        overlay.style.left = '50%';
-        overlay.style.backgroundColor = 'white';
+        overlay.style.top = '20%';
+        overlay.style.left = '35%';
+        overlay.style.width = '30%';
+        overlay.style.backgroundColor = '#f0f0f0';
+        overlay.style.display = 'flex';
+        overlay.style.gap = '5px';
+        overlay.style.flexDirection = 'column';
+        overlay.style.alignItems = 'center';
+        overlay.style.justifyContent = 'center';
+        overlay.style.textAlign = 'center';
+        overlay.style.borderRadius  = '8px';
+        overlay.style.padding  = '1rem';
 
         let title = document.createElement('h2');
-        title.textContent = 'testing';
+        title.textContent = 'Welcome to the image a11y checker.';
         title.style.color = 'black';
+
+        let details = document.createElement('p');
+        details.textContent = 'Select the type of elements you would like to check for a11y compliance. Once the scan has run you can hover over the elements in order to view additional detilas. Open the console to view the complete list of elements scanned.';
+        details.style.color = 'black';
+
+        let dropdown = document.createElement('select');
+        dropdown.id = 'elementSelectionDropdown';
+        dropdown.name = 'elements';
+        dropdown.style.width = 'max-content';
+
+        options.map(option => {
+            let newOption = document.createElement('option');
+            newOption.value = option;
+            newOption.textContent = option;
+
+            dropdown.appendChild(newOption);
+        });
 
         let confirmBtn = document.createElement('button');
         confirmBtn.textContent = 'Ok';
 
         confirmBtn.addEventListener('click' , () => {
+            let selection = document.getElementById('elementSelectionDropdown');
+            let value = selection.value;
             overlay.remove();
-            startScan();
+            startScan(value);
         });
 
         overlay.appendChild(title);
+        overlay.appendChild(details);
+        overlay.appendChild(dropdown);
         overlay.appendChild(confirmBtn);
         document.body.appendChild(overlay);
     };
 
-    displayOverlay();
-
-    const startScan = () => {
+    const queryImages = () => {
         for (const element in imgNodes) {
             if (element === 'entries') break;
 
@@ -87,9 +118,9 @@ javascript:(function () {
 
             if ((containsAriaHidden === 'true') || containsAltText || containsAriaLabel) {
                 let passedImgElement = buildElement('div', 'green', 'Passed');
-                let ariaHiddenElement = buildAdditionalInfo('p', 'green', 'aria-hidden=' + containsAriaHidden, 'passed-popOver');
-                let altElement = buildAdditionalInfo('p', 'green', 'alt=' + containsAltText, 'passed-popOver');
-                let ariaLabelElement = buildAdditionalInfo('p', 'green', 'aria-label=' + containsAriaLabel, 'passed-popOver');
+                let ariaHiddenElement = buildAdditionalInfo('p', 'green', 'aria-hidden= ' + containsAriaHidden, 'passed-popOver');
+                let altElement = buildAdditionalInfo('p', 'green', 'alt= ' + containsAltText, 'passed-popOver');
+                let ariaLabelElement = buildAdditionalInfo('p', 'green', 'aria-label= ' + containsAriaLabel, 'passed-popOver');
 
                 passedImgElement.addEventListener('mouseenter', () => {
                     currentElement.style.border = '2px, solid, yellow';
@@ -114,9 +145,9 @@ javascript:(function () {
             }
             else {
                 let imgFailElement = buildElement('div', 'red', 'X', 'bookMarklet');
-                let ariaHiddenElement = buildAdditionalInfo('p', 'red', 'aria-hidden=' + containsAriaHidden, 'failed-popOver');
-                let altElement = buildAdditionalInfo('p', 'red', 'alt=' + containsAltText, 'failed-popOver');
-                let ariaLabelElement = buildAdditionalInfo('p', 'red', 'aria-label=' + containsAriaLabel, 'failed-popOver');
+                let ariaHiddenElement = buildAdditionalInfo('p', 'red', 'aria-hidden= ' + containsAriaHidden, 'failed-popOver');
+                let altElement = buildAdditionalInfo('p', 'red', 'alt= ' + containsAltText, 'failed-popOver');
+                let ariaLabelElement = buildAdditionalInfo('p', 'red', 'aria-label= ' + containsAriaLabel, 'failed-popOver');
         
                 imgFailElement.addEventListener('mouseenter', () => {
                     currentElement.style.border = '2px, solid, yellow';
@@ -140,7 +171,9 @@ javascript:(function () {
                 failedImgElements.push(currentElement);
             }
         }
+    };
 
+    const queryNonImages = () => {
         for (const element in nonImgNodes) {
             if (element === 'entries') break;
 
@@ -152,8 +185,8 @@ javascript:(function () {
             if ((containsAriaHidden === 'true') || containsAltText || containsAriaLabel) {
                 let passElement = buildElement('div', 'green', 'Passed', 'bookMarklet');
                 let ariaHiddenElement = buildAdditionalInfo('p', 'green', 'aria-hidden=' + containsAriaHidden, 'passed-popOver');
-                let altElement = buildAdditionalInfo('p', 'green', 'alt=' + containsAltText, 'passed-popOver');
-                let ariaLabelElement = buildAdditionalInfo('p', 'green', 'aria-label=' + containsAriaLabel, 'passed-popOver');
+                let altElement = buildAdditionalInfo('p', 'green', 'alt= ' + containsAltText, 'passed-popOver');
+                let ariaLabelElement = buildAdditionalInfo('p', 'green', 'aria-label= ' + containsAriaLabel, 'passed-popOver');
 
                 passElement.addEventListener('mouseenter', () => {
                     currentElement.style.border = '2px, solid, yellow';
@@ -178,9 +211,9 @@ javascript:(function () {
             }
             else {
                 let failElement = buildElement('div', 'red', 'X', 'bookMarklet');
-                let ariaHiddenElement = buildAdditionalInfo('p', 'red', 'aria-hidden=' + containsAriaHidden, 'failed-popOver');
-                let altElement = buildAdditionalInfo('p', 'red', 'alt=' + containsAltText, 'failed-popOver');
-                let ariaLabelElement = buildAdditionalInfo('p', 'red', 'aria-label=' + containsAriaLabel, 'failed-popOver');
+                let ariaHiddenElement = buildAdditionalInfo('p', 'red', 'aria-hidden= ' + containsAriaHidden, 'failed-popOver');
+                let altElement = buildAdditionalInfo('p', 'red', 'alt= ' + containsAltText, 'failed-popOver');
+                let ariaLabelElement = buildAdditionalInfo('p', 'red', 'aria-label= ' + containsAriaLabel, 'failed-popOver');
         
                 failElement.addEventListener('mouseenter', () => {
                     currentElement.style.border = '2px, solid, yellow';
@@ -203,61 +236,83 @@ javascript:(function () {
                 currentElement.after(failElement);
                 failedNonImgElements.push(currentElement);
             }
-
-            console.log('Start of image query');
-            console.group('Image Elements');
-            console.groupCollapsed('Passed Image Elements');
-            
-            if (passedImgElements.length != 0) {
-            passedImgElements.map(element => {
-                console.log('Passed', element);
-            });
-            }
-            else {
-                console.log('No Elements to display');
-            }
-
-            console.groupEnd();
-            console.groupCollapsed('Failed Image Elements');
-
-            if (failedImgElements.length != 0) {
-            failedImgElements.map(element => {
-                console.log('Failed', element);
-            });
-            }
-            else {
-                console.log('No Elements to display');
-            }
-
-            console.groupEnd();
-            console.groupEnd();
-            console.group('Non Image Elements');
-            console.groupCollapsed('Passed Non Image Elements');
-
-            if (passedNonImgElements.length != 0) {
-            passedNonImgElements.map(element => {
-                console.log('Passed', element);
-            });
-            }
-            else {
-                console.log('No Elements to display');
-            };
-
-            console.groupEnd();
-            console.groupCollapsed('Failed Non Image Elements');
-
-            if (failedNonImgElements.length != 0) {
-            failedNonImgElements.map(element => {
-                console.log('Failed', element);
-            });
-            }
-            else {
-                console.log('No Elements to display');
-            };
-
-            console.groupEnd();
-            console.groupEnd();
-            return;
         }
-    }
+    };
+
+    const logResults = () => {
+        console.log('Start of image query');
+        console.group('Image Elements');
+        console.groupCollapsed('Passed Image Elements');
+        
+        if (passedImgElements.length != 0) {
+        passedImgElements.map(element => {
+            console.log('Passed', element);
+        });
+        }
+        else {
+            console.log('No Elements to display');
+        }
+
+        console.groupEnd();
+        console.groupCollapsed('Failed Image Elements');
+
+        if (failedImgElements.length != 0) {
+        failedImgElements.map(element => {
+            console.log('Failed', element);
+        });
+        }
+        else {
+            console.log('No Elements to display');
+        }
+
+        console.groupEnd();
+        console.groupEnd();
+        console.group('Non Image Elements');
+        console.groupCollapsed('Passed Non Image Elements');
+
+        if (passedNonImgElements.length != 0) {
+        passedNonImgElements.map(element => {
+            console.log('Passed', element);
+        });
+        }
+        else {
+            console.log('No Elements to display');
+        };
+
+        console.groupEnd();
+        console.groupCollapsed('Failed Non Image Elements');
+
+        if (failedNonImgElements.length != 0) {
+        failedNonImgElements.map(element => {
+            console.log('Failed', element);
+        });
+        }
+        else {
+            console.log('No Elements to display');
+        };
+
+        console.groupEnd();
+        console.groupEnd();
+    };
+
+    const startScan = (elementType) => {
+        console.log(elementType);
+        if (elementType === 'Images') {
+            queryImages();
+            logResults();
+        }
+
+        if (elementType === 'Elements with role = image') {
+            queryNonImages();
+            logResults();
+        }
+
+        if (elementType === 'All') {
+            queryImages();
+            queryNonImages();
+            logResults();
+        }
+    };
+
+    displayOverlay();
 })();
