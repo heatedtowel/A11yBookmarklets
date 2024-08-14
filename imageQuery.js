@@ -185,13 +185,7 @@ javascript:(function () {
             const nonImgNodes = document.querySelectorAll("[role=img]");
             const imgNodes = document.querySelectorAll("img:not([role])");
 
-            console.log(typeof(nonImgNodes));
-            console.log(nonImgNodes);
-            console.log(imgNodes);
-
             let finalQuery = [...nonImgNodes, ...imgNodes];
-
-            console.log(finalQuery);
 
             imageQuery(finalQuery);
         }
