@@ -100,86 +100,14 @@ javascript:(function () {
         document.body.appendChild(overlay);
     };
 
-    const queryImages = () => {
-        const imgNodes = document.querySelectorAll("img:not([role])");
-        let passedImgElements = [];
-        let failedImgElements = [];
+    const imageQuery = (nodesToQuery) => {
+        let passedNodes = [];
+        let failedNodes = [];
 
-        for (const element in imgNodes) {
+        for (const element in nodesToQuery) {
             if (element === 'entries') break;
 
-            let currentElement = imgNodes[element];
-
-            let containsAriaHidden = currentElement.getAttribute('aria-hidden');
-            let containsAltText = currentElement.hasAttribute('alt');
-            let containsAriaLabel = currentElement.getAttribute('aria-label');
-
-            if ((containsAriaHidden === 'true') || containsAltText || containsAriaLabel) {
-                let passedImgElement = buildElement('div', 'green', '&#9432');
-                let ariaHiddenElement = buildAdditionalInfo('p', 'green', 'aria-hidden= ' + containsAriaHidden, 'passed-popOver');
-                let altElement = buildAdditionalInfo('p', 'green', 'alt= ' + containsAltText, 'passed-popOver');
-                let ariaLabelElement = buildAdditionalInfo('p', 'green', 'aria-label= ' + containsAriaLabel, 'passed-popOver');
-
-                passedImgElement.addEventListener('mouseenter', () => {
-                    currentElement.style.border = '2px, solid, yellow';
-
-                    passedImgElement.appendChild(ariaHiddenElement);
-                    passedImgElement.appendChild(altElement);
-                    passedImgElement.appendChild(ariaLabelElement);
-                });
-
-                passedImgElement.addEventListener('mouseleave', () => {
-                    currentElement.style.border = 'initial';
-
-                    let elementsToRemove = document.querySelectorAll('.passed-popOver');
-
-                    for (const element in elementsToRemove) {
-                        elementsToRemove[element].remove();
-                    }
-                });
-
-                currentElement.after(passedImgElement);
-                passedImgElements.push(currentElement);
-            }
-            else {
-                let imgFailElement = buildElement('div', 'red', '&#9432', 'bookMarklet');
-                let ariaHiddenElement = buildAdditionalInfo('p', 'red', 'aria-hidden= ' + containsAriaHidden, 'failed-popOver');
-                let altElement = buildAdditionalInfo('p', 'red', 'alt= ' + containsAltText, 'failed-popOver');
-                let ariaLabelElement = buildAdditionalInfo('p', 'red', 'aria-label= ' + containsAriaLabel, 'failed-popOver');
-        
-                imgFailElement.addEventListener('mouseenter', () => {
-                    currentElement.style.border = '2px, solid, yellow';
-
-                    imgFailElement.appendChild(ariaHiddenElement);
-                    imgFailElement.appendChild(altElement);
-                    imgFailElement.appendChild(ariaLabelElement);
-                });
-        
-                imgFailElement.addEventListener('mouseleave', () => {
-                    currentElement.style.border = 'initial';
-
-                    let elememtsToRemove = document.querySelectorAll('.failed-popOver');
-        
-                    for (const element in elememtsToRemove) {
-                        elememtsToRemove[element].remove();
-                    }
-                });
-        
-                currentElement.after(imgFailElement);
-                failedImgElements.push(currentElement);
-            }
-        }
-    };
-
-    const queryNonImages = () => {
-        const nonImgNodes = document.querySelectorAll("[role=img]");
-        let passedNonImgElements = [];
-        let failedNonImgElements = [];
-
-        for (const element in nonImgNodes) {
-            if (element === 'entries') break;
-
-            let currentElement = nonImgNodes[element];
+            let currentElement = nodesToQuery[element];
             let containsAriaHidden = currentElement.getAttribute('aria-hidden');
             let containsAltText = currentElement.hasAttribute('alt');
             let containsAriaLabel = currentElement.getAttribute('aria-label');
@@ -209,7 +137,7 @@ javascript:(function () {
                 });
         
                 currentElement.after(passElement);
-                passedNonImgElements.push(currentElement);
+                passedNodes.push(currentElement);
             }
             else {
                 let failElement = buildElement('div', 'red', '&#9432', 'bookMarklet');
@@ -236,83 +164,61 @@ javascript:(function () {
                 });
         
                 currentElement.after(failElement);
-                failedNonImgElements.push(currentElement);
+                failedNodes.push(currentElement);
             }
         }
-    };
-
-    const logResults = () => {
-        console.log('Start of image query');
-        console.group('Image Elements');
-        console.groupCollapsed('Passed Image Elements');
-        
-        if (passedImgElements.length != 0) {
-        passedImgElements.map(element => {
-            console.log('Passed', element);
-        });
-        }
-        else {
-            console.log('No Elements to display');
-        }
-
-        console.groupEnd();
-        console.groupCollapsed('Failed Image Elements');
-
-        if (failedImgElements.length != 0) {
-        failedImgElements.map(element => {
-            console.log('Failed', element);
-        });
-        }
-        else {
-            console.log('No Elements to display');
-        }
-
-        console.groupEnd();
-        console.groupEnd();
-        console.group('Non Image Elements');
-        console.groupCollapsed('Passed Non Image Elements');
-
-        if (passedNonImgElements.length != 0) {
-        passedNonImgElements.map(element => {
-            console.log('Passed', element);
-        });
-        }
-        else {
-            console.log('No Elements to display');
-        };
-
-        console.groupEnd();
-        console.groupCollapsed('Failed Non Image Elements');
-
-        if (failedNonImgElements.length != 0) {
-        failedNonImgElements.map(element => {
-            console.log('Failed', element);
-        });
-        }
-        else {
-            console.log('No Elements to display');
-        };
-
-        console.groupEnd();
-        console.groupEnd();
+        logResults(passedNodes, failedNodes)
     };
 
     const startScan = (elementType) => {
         if (elementType === 'Images') {
-            queryImages();
-            logResults();
+            const imgNodes = document.querySelectorAll("img:not([role])");
+            imageQuery(imgNodes);
         }
 
         if (elementType === 'Elements with role = image') {
-            queryNonImages();
-            logResults();
+            const nonImgNodes = document.querySelectorAll("[role=img]");
+            imageQuery(nonImgNodes);
         }
 
         if (elementType === 'All') {
-            queryImages();
-            queryNonImages();
-            logResults();
+            const nonImgNodes = document.querySelectorAll("[role=img]");
+            const imgNodes = document.querySelectorAll("img:not([role])");
+
+            let finalQuery = [...nonImgNodes, ...imgNodes];
+
+            imageQuery(finalQuery);
         }
+    };
+
+    const logResults = (passedNodes, failedNodes) => {
+        console.log('Start of image query');
+        console.group('Elements');
+        console.groupCollapsed('Passed Elements');
+        
+        if (passedNodes.length != 0) {
+            passedNodes.map(element => {
+            console.log('Passed', element);
+        });
+        }
+        else {
+            console.log('No Elements to display');
+        }
+
+        console.groupEnd();
+        console.groupCollapsed('Failed Elements');
+
+        if (failedNodes.length != 0) {
+            failedNodes.map(element => {
+            console.log('Failed', element);
+        });
+        }
+        else {
+            console.log('No Elements to display');
+        }
+
+        console.groupEnd();
+        console.groupEnd();
     };
 
     checkForExistingBookmarklets();
