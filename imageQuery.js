@@ -109,13 +109,14 @@ javascript:(function () {
 
             let currentElement = nodesToQuery[element];
             let containsAriaHidden = currentElement.getAttribute('aria-hidden');
+            let altText = currentElement.getAttribute('alt');
             let containsAltText = currentElement.hasAttribute('alt');
             let containsAriaLabel = currentElement.getAttribute('aria-label');
 
             if ((containsAriaHidden === 'true') || containsAltText || containsAriaLabel) {
                 let passElement = buildElement('div', 'green', '&#9432', 'bookMarklet');
                 let ariaHiddenElement = buildAdditionalInfo('p', 'green', 'aria-hidden=' + containsAriaHidden, 'passed-popOver');
-                let altElement = buildAdditionalInfo('p', 'green', 'alt= ' + containsAltText, 'passed-popOver');
+                let altElement = buildAdditionalInfo('p', 'green', 'alt= ' + altText, 'passed-popOver');
                 let ariaLabelElement = buildAdditionalInfo('p', 'green', 'aria-label= ' + containsAriaLabel, 'passed-popOver');
 
                 passElement.addEventListener('mouseenter', () => {
@@ -142,7 +143,7 @@ javascript:(function () {
             else {
                 let failElement = buildElement('div', 'red', '&#9432', 'bookMarklet');
                 let ariaHiddenElement = buildAdditionalInfo('p', 'red', 'aria-hidden= ' + containsAriaHidden, 'failed-popOver');
-                let altElement = buildAdditionalInfo('p', 'red', 'alt= ' + containsAltText, 'failed-popOver');
+                let altElement = buildAdditionalInfo('p', 'red', 'alt= ' + altText, 'failed-popOver');
                 let ariaLabelElement = buildAdditionalInfo('p', 'red', 'aria-label= ' + containsAriaLabel, 'failed-popOver');
         
                 failElement.addEventListener('mouseenter', () => {
