@@ -14,11 +14,12 @@ javascript:(function () {
         displayOverlay();
     };
 
-    const buildElement = (type, color, text, className = 'bookMarklet', backgroundColor = 'rgb(255, 255, 255, .8)') => {
+    const buildElement = (type, color, text, className = 'bookMarklet', backgroundColor = 'rgb(255, 255, 255, .8)', position = 'static') => {
         const newElement = document.createElement(`${type}`);
 
         newElement.className = `${className}`;
         newElement.innerHTML = `${text}`;
+        newElement.style.position = `${position}`;
         newElement.style.backgroundColor = `${backgroundColor}`;
         newElement.style.color = `${color}`;
         newElement.style.border = '2px, solid, Green';
@@ -114,13 +115,13 @@ javascript:(function () {
             let containsAriaLabel = currentElement.getAttribute('aria-label');
 
             if ((containsAriaHidden === 'true') || containsAltText || containsAriaLabel) {
-                let passElement = buildElement('div', 'green', '&#9432', 'bookMarklet');
+                let passElement = buildElement('div', 'green', '&#9432', 'bookMarklet', 'rgb(255, 255, 255, .8)', 'absolute');
                 let ariaHiddenElement = buildAdditionalInfo('p', 'green', 'aria-hidden=' + containsAriaHidden, 'passed-popOver');
                 let altElement = buildAdditionalInfo('p', 'green', 'alt= ' + altText, 'passed-popOver');
                 let ariaLabelElement = buildAdditionalInfo('p', 'green', 'aria-label= ' + containsAriaLabel, 'passed-popOver');
 
                 passElement.addEventListener('mouseenter', () => {
-                    currentElement.style.border = '2px, solid, yellow';
+                    currentElement.style.border = '2px solid yellow';
 
                     passElement.appendChild(ariaHiddenElement);
                     passElement.appendChild(altElement);
@@ -141,7 +142,7 @@ javascript:(function () {
                 passedNodes.push(currentElement);
             }
             else {
-                let failElement = buildElement('div', 'red', '&#9432', 'bookMarklet');
+                let failElement = buildElement('div', 'red', '&#9432', 'bookMarklet', 'rgb(255, 255, 255, .8)', 'absolute');
                 let ariaHiddenElement = buildAdditionalInfo('p', 'red', 'aria-hidden= ' + containsAriaHidden, 'failed-popOver');
                 let altElement = buildAdditionalInfo('p', 'red', 'alt= ' + altText, 'failed-popOver');
                 let ariaLabelElement = buildAdditionalInfo('p', 'red', 'aria-label= ' + containsAriaLabel, 'failed-popOver');
