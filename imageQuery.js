@@ -148,7 +148,7 @@ javascript:(function () {
                 let ariaLabelElement = buildAdditionalInfo('p', 'red', 'aria-label= ' + containsAriaLabel, 'failed-popOver');
         
                 failElement.addEventListener('mouseenter', () => {
-                    currentElement.style.border = '2px, solid, yellow';
+                    currentElement.style.border = '2px solid yellow';
 
                     failElement.appendChild(ariaHiddenElement);
                     failElement.appendChild(altElement);
