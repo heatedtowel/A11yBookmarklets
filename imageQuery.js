@@ -14,7 +14,7 @@ javascript:(function () {
         displayOverlay();
     };
 
-    const buildElement = (type, color, text, className = 'bookMarklet', backgroundColor = 'rgb(255, 255, 255, .8)', position = 'static') => {
+    const buildElement = (type, color, text, className = 'bookMarklet', backgroundColor = 'white', position = 'static') => {
         const newElement = document.createElement(`${type}`);
 
         newElement.className = `${className}`;
@@ -115,7 +115,7 @@ javascript:(function () {
             let containsAriaLabel = currentElement.getAttribute('aria-label');
 
             if ((containsAriaHidden === 'true') || containsAltText || containsAriaLabel) {
-                let passElement = buildElement('div', 'green', '&#9432', 'bookMarklet', 'rgb(255, 255, 255, .8)', 'absolute');
+                let passElement = buildElement('div', 'green', '&#9432', 'bookMarklet', 'white', 'absolute');
                 let ariaHiddenElement = buildAdditionalInfo('p', 'green', 'aria-hidden=' + containsAriaHidden, 'passed-popOver');
                 let altElement = buildAdditionalInfo('p', 'green', 'alt= ' + altText, 'passed-popOver');
                 let ariaLabelElement = buildAdditionalInfo('p', 'green', 'aria-label= ' + containsAriaLabel, 'passed-popOver');
@@ -138,11 +138,11 @@ javascript:(function () {
                     }
                 });
         
-                currentElement.after(passElement);
+                currentElement.before(passElement);
                 passedNodes.push(currentElement);
             }
             else {
-                let failElement = buildElement('div', 'red', '&#9432', 'bookMarklet', 'rgb(255, 255, 255, .8)', 'absolute');
+                let failElement = buildElement('div', 'red', '&#9432', 'bookMarklet', 'white', 'absolute');
                 let ariaHiddenElement = buildAdditionalInfo('p', 'red', 'aria-hidden= ' + containsAriaHidden, 'failed-popOver');
                 let altElement = buildAdditionalInfo('p', 'red', 'alt= ' + altText, 'failed-popOver');
                 let ariaLabelElement = buildAdditionalInfo('p', 'red', 'aria-label= ' + containsAriaLabel, 'failed-popOver');
@@ -165,7 +165,7 @@ javascript:(function () {
                     }
                 });
         
-                currentElement.after(failElement);
+                currentElement.before(failElement);
                 failedNodes.push(currentElement);
             }
         }
