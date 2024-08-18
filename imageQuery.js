@@ -99,6 +99,24 @@ javascript:(function () {
             optionLabel.style.paddingLeft = '5px';
             optionLabel.innerHTML = option;
 
+            if (option === 'All') {
+                newOption.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        options.map(option => {
+                            let currentSelection = document.getElementById(option);
+                            if (currentSelection.value != 'All') {
+                                currentSelection.setAttribute('disabled', 'true');
+                            }
+                        });
+                        return;
+                    }
+                    options.map(option => {
+                        let currentSelection = document.getElementById(option);
+                            currentSelection.removeAttribute('disabled');
+                    });
+                })
+            }
+
 
             optionContainer.appendChild(newOption);
             optionContainer.appendChild(optionLabel);
