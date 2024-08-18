@@ -74,6 +74,11 @@ javascript:(function () {
         details.textContent = 'Select the type of elements you would like to check for a11y compliance. Once the scan has run you can hover over the elements in order to view additional detilas. Open the console to view the complete list of elements scanned.';
         details.style.color = 'black';
 
+        let scanResults = document.createElement('p');
+        scanResults.id = 'scanResults';
+        scanResults.textContent = '0 nodes scanned';
+        scanResults.style.color = 'black';
+
         let checkboxContainer = document.createElement('div');
         checkboxContainer.style.display = 'flex';
         checkboxContainer.style.flexDirection ='column';
@@ -91,6 +96,7 @@ javascript:(function () {
             let optionLabel = document.createElement('label');
             optionLabel.setAttribute('for', `${option}`);
             optionLabel.style.color = 'black';
+            optionLabel.style.paddingLeft = '5px';
             optionLabel.innerHTML = option;
 
 
@@ -100,6 +106,11 @@ javascript:(function () {
             checkboxContainer.appendChild(optionContainer)
         });
 
+        let btnContainer = document.createElement('div');
+        btnContainer.style.display = 'flex';
+        btnContainer.style.alignItems = 'center';
+        btnContainer.style.justifyContent = 'center';
+
         let scanBtn = document.createElement('button');
         scanBtn.textContent = 'Scan';
         scanBtn.style.padding = '2px 8px';
@@ -108,15 +119,21 @@ javascript:(function () {
         scanBtn.style.cursor = 'pointer';
 
         scanBtn.addEventListener('click' , () => {
+            let totalQueries = 0;
             options.map(option => {
                 let currentSelection = document.getElementById(option);
 
                 if (currentSelection.checked) {
+                    totalQueries += 1;
                     let nodeList = gatherNodesToScan(currentSelection.value);
 
+                    
                     imageQuery(nodeList);
                 }
-                scanBtn.disabled = 'true';
+                if (totalQueries > 0) {
+                    currentSelection.setAttribute('disabled', 'true');
+                    scanBtn.disabled = 'true';
+                }
             });
             logResults(passedNodes, failedNodes);
         });
@@ -132,11 +149,14 @@ javascript:(function () {
             overlay.remove();
         });
 
+        btnContainer.appendChild(scanBtn);
+        btnContainer.appendChild(confirmBtn);
+
         overlay.appendChild(title);
         overlay.appendChild(details);
+        overlay.appendChild(scanResults);
         overlay.appendChild(checkboxContainer);
-        overlay.appendChild(scanBtn);
-        overlay.appendChild(confirmBtn);
+        overlay.appendChild(btnContainer);
         document.body.appendChild(overlay);
     };
 
@@ -237,15 +257,7 @@ javascript:(function () {
     const logResults = (passedNodes, failedNodes) => {
         let resultsElement = document.getElementById('scanResults');
 
-        if (resultsElement) {
-            resultsElement.textContent = `${passedNodes.length + failedNodes.length} nodes scanned`;
-        }
-        else{
-            resultsElement = document.createElement('p');
-            resultsElement.id = 'scanResults';
-            resultsElement.textContent = `${passedNodes.length + failedNodes.length} nodes scanned`;
-            document.getElementById('overlayDetails').appendChild(resultsElement);
-        }
+        resultsElement.textContent = `${passedNodes.length + failedNodes.length} nodes scanned`;
 
         console.log('Start of image query');
         console.group('Elements');
