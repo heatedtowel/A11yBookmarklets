@@ -209,7 +209,6 @@ javascript:(function () {
 
     const gatherNodesToScan = (elementType) => {
         let nodeList;
-        console.log('nodes',nodeList);
 
         if (elementType === 'Images') {
             nodeList = document.querySelectorAll("img:not([role])");
