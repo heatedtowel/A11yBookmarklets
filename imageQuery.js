@@ -1,6 +1,5 @@
 javascript:(function () {
-    
-    const checkForExistingBookmarklets = () => {
+        const checkForExistingBookmarklets = () => {
         const existingBookmarkletNodes = document.querySelectorAll(".bookMarklet");
         
         if (existingBookmarkletNodes.length) {
@@ -13,6 +12,9 @@ javascript:(function () {
         }
         displayOverlay();
     };
+
+    let passedNodes = [];
+    let failedNodes = [];
 
     const buildElement = (type, color, text, className = 'bookMarklet', backgroundColor = 'white', position = 'static') => {
         const newElement = document.createElement(`${type}`);
@@ -45,7 +47,7 @@ javascript:(function () {
     };
 
     const displayOverlay = () => {
-        let options = ['Images', 'Elements with role = image', 'All'];
+        let options = ['All', 'Images', `Elements with role='image'`, 'svg'];
 
         let overlay = document.createElement('div');
         overlay.className = 'bookMarklet';
@@ -68,43 +70,97 @@ javascript:(function () {
         title.style.color = 'black';
 
         let details = document.createElement('p');
+        details.id = 'overlayDetails';
         details.textContent = 'Select the type of elements you would like to check for a11y compliance. Once the scan has run you can hover over the elements in order to view additional detilas. Open the console to view the complete list of elements scanned.';
         details.style.color = 'black';
 
-        let dropdown = document.createElement('select');
-        dropdown.id = 'elementSelectionDropdown';
-        dropdown.name = 'elements';
-        dropdown.style.width = 'max-content';
+        let scanResults = document.createElement('p');
+        scanResults.id = 'scanResults';
+        scanResults.textContent = '0 nodes scanned';
+        scanResults.style.color = 'black';
+
+        let checkboxContainer = document.createElement('div');
+        checkboxContainer.style.display = 'flex';
+        checkboxContainer.style.flexDirection ='column';
+        checkboxContainer.style.alignItems = 'flex-start';
+        checkboxContainer.style.justifyContent = 'center';
 
         options.map(option => {
-            let newOption = document.createElement('option');
+            let optionContainer = document.createElement('div');
+            let newOption = document.createElement('input');
+            newOption.type =  'checkbox';
+            newOption.id =  option;
+            newOption.name =  'imageTypes';
             newOption.value = option;
-            newOption.textContent = option;
 
-            dropdown.appendChild(newOption);
+            let optionLabel = document.createElement('label');
+            optionLabel.setAttribute('for', `${option}`);
+            optionLabel.style.color = 'black';
+            optionLabel.style.paddingLeft = '5px';
+            optionLabel.innerHTML = option;
+
+
+            optionContainer.appendChild(newOption);
+            optionContainer.appendChild(optionLabel);
+
+            checkboxContainer.appendChild(optionContainer)
+        });
+
+        let btnContainer = document.createElement('div');
+        btnContainer.style.display = 'flex';
+        btnContainer.style.alignItems = 'center';
+        btnContainer.style.justifyContent = 'center';
+
+        let scanBtn = document.createElement('button');
+        scanBtn.textContent = 'Scan';
+        scanBtn.style.padding = '2px 8px';
+        scanBtn.style.borderRadius = '1rem';
+        scanBtn.style.backgroundColor = 'grey';
+        scanBtn.style.cursor = 'pointer';
+
+        scanBtn.addEventListener('click' , () => {
+            let totalQueries = 0;
+            options.map(option => {
+                let currentSelection = document.getElementById(option);
+
+                if (currentSelection.checked) {
+                    totalQueries += 1;
+                    let nodeList = gatherNodesToScan(currentSelection.value);
+
+                    
+                    imageQuery(nodeList);
+                }
+                if (totalQueries > 0) {
+                    currentSelection.setAttribute('disabled', 'true');
+                    scanBtn.disabled = 'true';
+                }
+            });
+            logResults(passedNodes, failedNodes);
         });
 
         let confirmBtn = document.createElement('button');
         confirmBtn.textContent = 'Ok';
+        confirmBtn.style.padding = '2px 8px';
+        confirmBtn.style.borderRadius = '1rem';
+        confirmBtn.style.backgroundColor = 'grey';
+        confirmBtn.style.cursor = 'pointer';
 
         confirmBtn.addEventListener('click' , () => {
-            let selection = document.getElementById('elementSelectionDropdown');
-            let value = selection.value;
             overlay.remove();
-            startScan(value);
         });
+
+        btnContainer.appendChild(scanBtn);
+        btnContainer.appendChild(confirmBtn);
 
         overlay.appendChild(title);
         overlay.appendChild(details);
-        overlay.appendChild(dropdown);
-        overlay.appendChild(confirmBtn);
+        overlay.appendChild(scanResults);
+        overlay.appendChild(checkboxContainer);
+        overlay.appendChild(btnContainer);
         document.body.appendChild(overlay);
     };
 
     const imageQuery = (nodesToQuery) => {
-        let passedNodes = [];
-        let failedNodes = [];
-
         for (const element in nodesToQuery) {
             if (element === 'entries') break;
 
@@ -169,31 +225,40 @@ javascript:(function () {
                 failedNodes.push(currentElement);
             }
         }
-        logResults(passedNodes, failedNodes)
     };
 
-    const startScan = (elementType) => {
+    const gatherNodesToScan = (elementType) => {
+        let nodeList;
+
         if (elementType === 'Images') {
-            const imgNodes = document.querySelectorAll("img:not([role])");
-            imageQuery(imgNodes);
+            nodeList = document.querySelectorAll("img:not([role])");
         }
 
         if (elementType === 'Elements with role = image') {
-            const nonImgNodes = document.querySelectorAll("[role=img]");
-            imageQuery(nonImgNodes);
+            nodeList = document.querySelectorAll("[role=img]");
+        }
+
+        if (elementType === 'svg') {
+            nodeList = document.querySelectorAll("svg");
         }
 
         if (elementType === 'All') {
-            const nonImgNodes = document.querySelectorAll("[role=img]");
-            const imgNodes = document.querySelectorAll("img:not([role])");
+            nonImgNodes = document.querySelectorAll("[role=img]");
+            imgNodes = document.querySelectorAll("img:not([role])");
+            svgNodes = document.querySelectorAll("svg");
 
-            let finalQuery = [...nonImgNodes, ...imgNodes];
 
-            imageQuery(finalQuery);
+            nodeList = [...nonImgNodes, ...imgNodes, ...svgNodes];
+
         }
+        return nodeList;
     };
 
     const logResults = (passedNodes, failedNodes) => {
+        let resultsElement = document.getElementById('scanResults');
+
+        resultsElement.textContent = `${passedNodes.length + failedNodes.length} nodes scanned`;
+
         console.log('Start of image query');
         console.group('Elements');
         console.groupCollapsed('Passed Elements');
