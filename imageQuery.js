@@ -1,6 +1,5 @@
 javascript:(function () {
-    
-    const checkForExistingBookmarklets = () => {
+        const checkForExistingBookmarklets = () => {
         const existingBookmarkletNodes = document.querySelectorAll(".bookMarklet");
         
         if (existingBookmarkletNodes.length) {
@@ -13,6 +12,9 @@ javascript:(function () {
         }
         displayOverlay();
     };
+
+    let passedNodes = [];
+    let failedNodes = [];
 
     const buildElement = (type, color, text, className = 'bookMarklet', backgroundColor = 'white', position = 'static') => {
         const newElement = document.createElement(`${type}`);
@@ -45,7 +47,7 @@ javascript:(function () {
     };
 
     const displayOverlay = () => {
-        let options = ['Images', 'Elements with role = image', 'All'];
+        let options = ['All', 'Images', `Elements with role='image'`, 'svg'];
 
         let overlay = document.createElement('div');
         overlay.className = 'bookMarklet';
@@ -71,40 +73,61 @@ javascript:(function () {
         details.textContent = 'Select the type of elements you would like to check for a11y compliance. Once the scan has run you can hover over the elements in order to view additional detilas. Open the console to view the complete list of elements scanned.';
         details.style.color = 'black';
 
-        let dropdown = document.createElement('select');
-        dropdown.id = 'elementSelectionDropdown';
-        dropdown.name = 'elements';
-        dropdown.style.width = 'max-content';
+        let checkboxContainer = document.createElement('div');
+        checkboxContainer.style.display = 'flex';
+        checkboxContainer.style.flexDirection ='column';
+        checkboxContainer.style.alignItems = 'flex-start';
+        checkboxContainer.style.justifyContent = 'center';
 
         options.map(option => {
-            let newOption = document.createElement('option');
+            let optionContainer = document.createElement('div');
+            let newOption = document.createElement('input');
+            newOption.type =  'checkbox';
+            newOption.id =  option;
+            newOption.name =  'imageTypes';
             newOption.value = option;
-            newOption.textContent = option;
 
-            dropdown.appendChild(newOption);
+            let optionLabel = document.createElement('label');
+            optionLabel.setAttribute('for', `${option}`);
+            optionLabel.style.color = 'black';
+            optionLabel.innerHTML = option;
+
+
+            optionContainer.appendChild(newOption);
+            optionContainer.appendChild(optionLabel);
+
+            checkboxContainer.appendChild(optionContainer)
         });
 
         let confirmBtn = document.createElement('button');
         confirmBtn.textContent = 'Ok';
+        confirmBtn.style.padding = '2px 8px';
+        confirmBtn.style.borderRadius = '1rem';
+        confirmBtn.style.backgroundColor = 'grey';
+        confirmBtn.style.cursor = 'pointer';
 
         confirmBtn.addEventListener('click' , () => {
-            let selection = document.getElementById('elementSelectionDropdown');
-            let value = selection.value;
+            options.map(option => {
+                let currentSelection = document.getElementById(option);
+
+                if (currentSelection.checked) {
+                    let nodeList = gatherNodesToScan(currentSelection.value);
+
+                    imageQuery(nodeList);
+                }
+            });
             overlay.remove();
-            startScan(value);
+            logResults(passedNodes, failedNodes);
         });
 
         overlay.appendChild(title);
         overlay.appendChild(details);
-        overlay.appendChild(dropdown);
+        overlay.appendChild(checkboxContainer);
         overlay.appendChild(confirmBtn);
         document.body.appendChild(overlay);
     };
 
     const imageQuery = (nodesToQuery) => {
-        let passedNodes = [];
-        let failedNodes = [];
-
         for (const element in nodesToQuery) {
             if (element === 'entries') break;
 
@@ -169,28 +192,33 @@ javascript:(function () {
                 failedNodes.push(currentElement);
             }
         }
-        logResults(passedNodes, failedNodes)
     };
 
-    const startScan = (elementType) => {
+    const gatherNodesToScan = (elementType) => {
+        let nodeList;
+
         if (elementType === 'Images') {
-            const imgNodes = document.querySelectorAll("img:not([role])");
-            imageQuery(imgNodes);
+            nodeList = document.querySelectorAll("img:not([role])");
         }
 
         if (elementType === 'Elements with role = image') {
-            const nonImgNodes = document.querySelectorAll("[role=img]");
-            imageQuery(nonImgNodes);
+            nodeList = document.querySelectorAll("[role=img]");
+        }
+
+        if (elementType === 'svg') {
+            nodeList = document.querySelectorAll("svg");
         }
 
         if (elementType === 'All') {
-            const nonImgNodes = document.querySelectorAll("[role=img]");
-            const imgNodes = document.querySelectorAll("img:not([role])");
+            nonImgNodes = document.querySelectorAll("[role=img]");
+            imgNodes = document.querySelectorAll("img:not([role])");
+            svgNodes = document.querySelectorAll("svg");
 
-            let finalQuery = [...nonImgNodes, ...imgNodes];
 
-            imageQuery(finalQuery);
+            nodeList = [...nonImgNodes, ...imgNodes, ...svgNodes];
+
         }
+        return nodeList;
     };
 
     const logResults = (passedNodes, failedNodes) => {
