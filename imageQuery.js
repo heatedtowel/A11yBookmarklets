@@ -70,6 +70,7 @@ javascript:(function () {
         title.style.color = 'black';
 
         let details = document.createElement('p');
+        details.id = 'overlayDetails';
         details.textContent = 'Select the type of elements you would like to check for a11y compliance. Once the scan has run you can hover over the elements in order to view additional detilas. Open the console to view the complete list of elements scanned.';
         details.style.color = 'black';
 
@@ -99,14 +100,14 @@ javascript:(function () {
             checkboxContainer.appendChild(optionContainer)
         });
 
-        let confirmBtn = document.createElement('button');
-        confirmBtn.textContent = 'Ok';
-        confirmBtn.style.padding = '2px 8px';
-        confirmBtn.style.borderRadius = '1rem';
-        confirmBtn.style.backgroundColor = 'grey';
-        confirmBtn.style.cursor = 'pointer';
+        let scanBtn = document.createElement('button');
+        scanBtn.textContent = 'Scan';
+        scanBtn.style.padding = '2px 8px';
+        scanBtn.style.borderRadius = '1rem';
+        scanBtn.style.backgroundColor = 'grey';
+        scanBtn.style.cursor = 'pointer';
 
-        confirmBtn.addEventListener('click' , () => {
+        scanBtn.addEventListener('click' , () => {
             options.map(option => {
                 let currentSelection = document.getElementById(option);
 
@@ -115,14 +116,26 @@ javascript:(function () {
 
                     imageQuery(nodeList);
                 }
+                scanBtn.disabled = 'true';
             });
-            overlay.remove();
             logResults(passedNodes, failedNodes);
+        });
+
+        let confirmBtn = document.createElement('button');
+        confirmBtn.textContent = 'Ok';
+        confirmBtn.style.padding = '2px 8px';
+        confirmBtn.style.borderRadius = '1rem';
+        confirmBtn.style.backgroundColor = 'grey';
+        confirmBtn.style.cursor = 'pointer';
+
+        confirmBtn.addEventListener('click' , () => {
+            overlay.remove();
         });
 
         overlay.appendChild(title);
         overlay.appendChild(details);
         overlay.appendChild(checkboxContainer);
+        overlay.appendChild(scanBtn);
         overlay.appendChild(confirmBtn);
         document.body.appendChild(overlay);
     };
@@ -196,6 +209,7 @@ javascript:(function () {
 
     const gatherNodesToScan = (elementType) => {
         let nodeList;
+        console.log('nodes',nodeList);
 
         if (elementType === 'Images') {
             nodeList = document.querySelectorAll("img:not([role])");
@@ -222,6 +236,18 @@ javascript:(function () {
     };
 
     const logResults = (passedNodes, failedNodes) => {
+        let resultsElement = document.getElementById('scanResults');
+
+        if (resultsElement) {
+            resultsElement.textContent = `${passedNodes.length + failedNodes.length} nodes scanned`;
+        }
+        else{
+            resultsElement = document.createElement('p');
+            resultsElement.id = 'scanResults';
+            resultsElement.textContent = `${passedNodes.length + failedNodes.length} nodes scanned`;
+            document.getElementById('overlayDetails').appendChild(resultsElement);
+        }
+
         console.log('Start of image query');
         console.group('Elements');
         console.groupCollapsed('Passed Elements');
