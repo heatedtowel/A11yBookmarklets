@@ -42,6 +42,7 @@ javascript:(function () {
         newPopOver.style.padding = '3px';
         newPopOver.style.borderRadius = '3px';
         newPopOver.style.width = 'max-content';
+        newPopOver.style.margin = '0';
 
         return newPopOver;
     };
@@ -187,12 +188,15 @@ javascript:(function () {
             let altText = currentElement.getAttribute('alt');
             let containsAltText = currentElement.hasAttribute('alt');
             let containsAriaLabel = currentElement.getAttribute('aria-label');
+            let containsRole = currentElement.getAttribute('role');
 
-            if ((containsAriaHidden === 'true') || containsAltText || containsAriaLabel) {
+            if ((containsAriaHidden === 'true') || containsAltText || containsAriaLabel || (containsRole === 'img'|| 'graphics-document' || 'graphics-symbol')) {
+                console.log('pass',currentElement);
                 let passElement = buildElement('div', 'green', '&#9432', 'bookMarklet', 'white', 'absolute');
                 let ariaHiddenElement = buildAdditionalInfo('p', 'green', 'aria-hidden=' + containsAriaHidden, 'passed-popOver');
                 let altElement = buildAdditionalInfo('p', 'green', 'alt= ' + altText, 'passed-popOver');
                 let ariaLabelElement = buildAdditionalInfo('p', 'green', 'aria-label= ' + containsAriaLabel, 'passed-popOver');
+                let elementRole = buildAdditionalInfo('p', 'green', 'role= ' + currentElement.getAttribute('role'), 'passed-popOver');
 
                 passElement.addEventListener('mouseenter', () => {
                     currentElement.style.border = '2px solid yellow';
@@ -200,6 +204,7 @@ javascript:(function () {
                     passElement.appendChild(ariaHiddenElement);
                     passElement.appendChild(altElement);
                     passElement.appendChild(ariaLabelElement);
+                    passElement.appendChild(elementRole);
                 });
 
                 passElement.addEventListener('mouseleave', () => {
@@ -220,6 +225,7 @@ javascript:(function () {
                 let ariaHiddenElement = buildAdditionalInfo('p', 'red', 'aria-hidden= ' + containsAriaHidden, 'failed-popOver');
                 let altElement = buildAdditionalInfo('p', 'red', 'alt= ' + altText, 'failed-popOver');
                 let ariaLabelElement = buildAdditionalInfo('p', 'red', 'aria-label= ' + containsAriaLabel, 'failed-popOver');
+                let elementRole = buildAdditionalInfo('p', 'green', 'role= ' + currentElement.getAttribute('role'), 'passed-popOver');
         
                 failElement.addEventListener('mouseenter', () => {
                     currentElement.style.border = '2px solid yellow';
@@ -227,6 +233,7 @@ javascript:(function () {
                     failElement.appendChild(ariaHiddenElement);
                     failElement.appendChild(altElement);
                     failElement.appendChild(ariaLabelElement);
+                    failElement.appendChild(elementRole);
                 });
         
                 failElement.addEventListener('mouseleave', () => {
