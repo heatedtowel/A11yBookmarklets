@@ -26,7 +26,7 @@ javascript:(function () {
         newElement.style.backgroundColor = `${backgroundColor}`;
         newElement.style.color = `${color}`;
         newElement.style.border = '2px, solid, Green';
-        newElement.style.padding = '1px';
+        newElement.style.padding = '1px 4px';
         newElement.style.borderRadius = '3px';
         newElement.style.width = 'max-content';
         newElement.style.zIndex = '99';
@@ -193,7 +193,7 @@ javascript:(function () {
             let roleType = currentElement.getAttribute('role');
 
             if (elementAttributes.map(attribute => attributesToQuery.includes(attribute)) || roleType.map(type => rolesToQuery.includes(type))) {
-                let passElement = buildElement('div', 'green', '&#9432', 'bookMarklet', 'white', 'absolute');
+                let passElement = buildElement('div', 'green', '&#9432', 'bookMarklet', 'rgb(255, 255, 255, .8)', 'absolute');
                 let infoContainer = buildElement('div', 'black', '', 'bookMarklet', 'white', 'absolute', 'passedContainer');
                 infoContainer.style.display = 'flex';
                 infoContainer.style.flexDirection = 'column';
@@ -243,7 +243,7 @@ javascript:(function () {
                 passedNodes.push(currentElement);
             }
             else {      
-                let failElement = buildElement('div', 'red', '&#9432', 'bookMarklet', 'white', 'absolute');
+                let failElement = buildElement('div', 'red', '&#9432', 'bookMarklet', 'rgb(255, 255, 255, .8)', 'absolute');
                 let infoContainer = buildElement('div', 'green', null, 'bookmarklet', 'white', 'absolute', 'failedContainer');
 
                 elementAttributes.map(attribute => {
