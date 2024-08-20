@@ -182,17 +182,17 @@ javascript:(function () {
     };
 
     const imageQuery = (nodesToQuery) => {
+        const attributesToQuery = ['aria-label', 'aria-hidden', 'alt', 'role'];
+        const rolesToQuery = ['img', 'graphics-document', 'graphics-symbol', 'role'];
+
         for (const element in nodesToQuery) {
             if (element === 'entries') break;
 
             let currentElement = nodesToQuery[element];
             let elementAttributes = currentElement.getAttributeNames();
-            let containsAriaHidden = elementAttributes.includes('aria-hidden');
-            let containsAriaLabel = elementAttributes.includes('aria-label');
-            let containsAltText = elementAttributes.includes('alt');
-            let containsRole = elementAttributes.includes('role');
+            let roleType = currentElement.getAttribute('role');
 
-            if (containsAriaHidden || containsAltText || containsAriaLabel || containsRole === 'img'|| containsRole === 'graphics-document' || containsRole === 'graphics-symbol') {
+            if (elementAttributes.map(attribute => attributesToQuery.includes(attribute)) || roleType.map(type => rolesToQuery.includes(type))) {
                 let passElement = buildElement('div', 'green', '&#9432', 'bookMarklet', 'white', 'absolute');
                 let infoContainer = buildElement('div', 'black', '', 'bookMarklet', 'white', 'absolute', 'passedContainer');
                 infoContainer.style.display = 'flex';
