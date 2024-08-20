@@ -16,9 +16,10 @@ javascript:(function () {
     let passedNodes = [];
     let failedNodes = [];
 
-    const buildElement = (type, color, text, className = 'bookMarklet', backgroundColor = 'white', position = 'static') => {
+    const buildElement = (type, color, text, className = 'bookMarklet', backgroundColor = 'white', position = 'static', id = null) => {
         const newElement = document.createElement(`${type}`);
 
+        newElement.id = `${id}`;
         newElement.className = `${className}`;
         newElement.innerHTML = `${text}`;
         newElement.style.position = `${position}`;
@@ -33,18 +34,19 @@ javascript:(function () {
         return newElement;
     };
 
-    const buildAdditionalInfo = (type, color, text,  className = 'bookMarklet') => {
-        const newPopOver = document.createElement(`${type}`);
+    const buildAdditionalInfo = (type, color, text,  className = 'bookMarklet', id = null) => {
+        const additionalInfoElement = document.createElement(`${type}`);
 
-        newPopOver.className = `${className}`;
-        newPopOver.textContent = `${text}`;
-        newPopOver.style.color = `${color}`;
-        newPopOver.style.padding = '3px';
-        newPopOver.style.borderRadius = '3px';
-        newPopOver.style.width = 'max-content';
-        newPopOver.style.margin = '0';
+        additionalInfoElement.id = `${id}`;
+        additionalInfoElement.className = `${className}`;
+        additionalInfoElement.textContent = `${text}`;
+        additionalInfoElement.style.color = `${color}`;
+        additionalInfoElement.style.padding = '3px';
+        additionalInfoElement.style.borderRadius = '3px';
+        additionalInfoElement.style.width = 'max-content';
+        additionalInfoElement.style.margin = '0';
 
-        return newPopOver;
+        return additionalInfoElement;
     };
 
     const displayOverlay = () => {
@@ -72,7 +74,7 @@ javascript:(function () {
 
         let details = document.createElement('p');
         details.id = 'overlayDetails';
-        details.textContent = 'Select the type of elements you would like to check for a11y compliance. Once the scan has run you can hover over the elements in order to view additional detilas. Open the console to view the complete list of elements scanned.';
+        details.textContent = 'Select the type of elements you would like to check for a11y compliance. Once the scan has run you can hover over the elements in order to view additional details. Open the console to view the complete list of elements scanned.';
         details.style.color = 'black';
 
         let scanResults = document.createElement('p');
@@ -158,7 +160,7 @@ javascript:(function () {
         });
 
         let confirmBtn = document.createElement('button');
-        confirmBtn.textContent = 'Ok';
+        confirmBtn.textContent = 'Close';
         confirmBtn.style.padding = '2px 8px';
         confirmBtn.style.borderRadius = '1rem';
         confirmBtn.style.backgroundColor = 'grey';
@@ -184,33 +186,55 @@ javascript:(function () {
             if (element === 'entries') break;
 
             let currentElement = nodesToQuery[element];
-            let containsAriaHidden = currentElement.getAttribute('aria-hidden');
-            let altText = currentElement.getAttribute('alt');
-            let containsAltText = currentElement.hasAttribute('alt');
-            let containsAriaLabel = currentElement.getAttribute('aria-label');
-            let containsRole = currentElement.getAttribute('role');
+            let elementAttributes = currentElement.getAttributeNames();
+            let containsAriaHidden = elementAttributes.includes('aria-hidden');
+            let containsAriaLabel = elementAttributes.includes('aria-label');
+            let containsAltText = elementAttributes.includes('alt');
+            let containsRole = elementAttributes.includes('role');
 
-            if ((containsAriaHidden === 'true') || containsAltText || containsAriaLabel || (containsRole === 'img'|| 'graphics-document' || 'graphics-symbol')) {
-                console.log('pass',currentElement);
+            if (containsAriaHidden || containsAltText || containsAriaLabel || containsRole === 'img'|| containsRole === 'graphics-document' || containsRole === 'graphics-symbol') {
                 let passElement = buildElement('div', 'green', '&#9432', 'bookMarklet', 'white', 'absolute');
-                let ariaHiddenElement = buildAdditionalInfo('p', 'green', 'aria-hidden=' + containsAriaHidden, 'passed-popOver');
-                let altElement = buildAdditionalInfo('p', 'green', 'alt= ' + altText, 'passed-popOver');
-                let ariaLabelElement = buildAdditionalInfo('p', 'green', 'aria-label= ' + containsAriaLabel, 'passed-popOver');
-                let elementRole = buildAdditionalInfo('p', 'green', 'role= ' + currentElement.getAttribute('role'), 'passed-popOver');
+                let infoContainer = buildElement('div', 'black', '', 'bookMarklet', 'white', 'absolute', 'passedContainer');
+                infoContainer.style.display = 'flex';
+                infoContainer.style.flexDirection = 'column';
+                infoContainer.style.alignItems = 'flex-start';
+                infoContainer.style.justifyContent = 'center';
+                infoContainer.style.top = '50%';
+                infoContainer.style.left = '50%';
+                infoContainer.style.width = '30%';
+                infoContainer.style.transform = 'translate(-50%, -50%)';
+                infoContainer.style.padding = '2rem';
+                infoContainer.style.borderRadius = '1rem';
+                infoContainer.style.wordBreak  = 'break-all';
+                infoContainer.style.wordBreak  = 'anywhere';
+
+                let titleElement = buildAdditionalInfo('h3', 'black', 'Additional Information', 'bookmarklet', 'infoTitle');
+                titleElement.style.alignSelf = 'center';
+                let elementName = buildAdditionalInfo('p', 'black', currentElement.textContent, 'bookmarklet', 'infoTitle');
+                let typeElement = buildAdditionalInfo('p', 'black', `Element Type: ${currentElement.localName}`, 'bookmarklet', 'infoTitle');
+                let attributeElement = buildAdditionalInfo('p', 'black', `Element Attributes`, 'bookmarklet', 'infoTitle');
+                infoContainer.appendChild(titleElement);
+                infoContainer.appendChild(elementName);
+                infoContainer.appendChild(typeElement);
+                infoContainer.appendChild(attributeElement);
+
+
+                elementAttributes.map(attribute => {
+                        let attributeValue = currentElement.getAttribute(attribute);
+                        let attributeElement = buildAdditionalInfo('p', 'black', `${attribute} = ` + attributeValue, 'passed-popOver');
+                        infoContainer.appendChild(attributeElement);
+                });
 
                 passElement.addEventListener('mouseenter', () => {
                     currentElement.style.border = '2px solid yellow';
+                    document.body.appendChild(infoContainer);
 
-                    passElement.appendChild(ariaHiddenElement);
-                    passElement.appendChild(altElement);
-                    passElement.appendChild(ariaLabelElement);
-                    passElement.appendChild(elementRole);
                 });
 
                 passElement.addEventListener('mouseleave', () => {
                     currentElement.style.border = 'initial';
 
-                    let elementsToRemove = document.querySelectorAll('.passed-popOver');
+                    let elementsToRemove = document.querySelectorAll('passedContainer');
         
                     for (const element in elementsToRemove) {
                         elementsToRemove[element].remove();
@@ -220,29 +244,28 @@ javascript:(function () {
                 currentElement.before(passElement);
                 passedNodes.push(currentElement);
             }
-            else {
+            else {      
                 let failElement = buildElement('div', 'red', '&#9432', 'bookMarklet', 'white', 'absolute');
-                let ariaHiddenElement = buildAdditionalInfo('p', 'red', 'aria-hidden= ' + containsAriaHidden, 'failed-popOver');
-                let altElement = buildAdditionalInfo('p', 'red', 'alt= ' + altText, 'failed-popOver');
-                let ariaLabelElement = buildAdditionalInfo('p', 'red', 'aria-label= ' + containsAriaLabel, 'failed-popOver');
-                let elementRole = buildAdditionalInfo('p', 'green', 'role= ' + currentElement.getAttribute('role'), 'passed-popOver');
-        
+                let infoContainer = buildElement('div', 'green', null, 'bookmarklet', 'white', 'absolute', 'failedContainer');
+
+                elementAttributes.map(attribute => {
+                    let attributeValue = currentElement.getAttribute(attribute);
+                    let attributeElement = buildAdditionalInfo('p', 'red', `${attribute} = ` + attributeValue, 'failed-popOver');
+                    infoContainer.appendChild(attributeElement);
+                });
+
                 failElement.addEventListener('mouseenter', () => {
                     currentElement.style.border = '2px solid yellow';
-
-                    failElement.appendChild(ariaHiddenElement);
-                    failElement.appendChild(altElement);
-                    failElement.appendChild(ariaLabelElement);
-                    failElement.appendChild(elementRole);
+                    failElement.appendChild(infoContainer);
                 });
         
                 failElement.addEventListener('mouseleave', () => {
                     currentElement.style.border = 'initial';
 
-                    let infobox = document.querySelectorAll('.failed-popOver');
+                    let elementsToRemove = document.querySelectorAll('#failedContainer');
         
-                    for (const element in infobox) {
-                        infobox[element].remove();
+                    for (const element in elementsToRemove) {
+                        elementsToRemove[element].remove();
                     }
                 });
         
