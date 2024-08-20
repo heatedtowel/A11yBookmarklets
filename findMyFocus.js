@@ -11,7 +11,7 @@ javascript:(function () {
     }
 
 
-    const focusableNodes = document.querySelectorAll('a, button, input, textarea, select, [tabindex="0"], [role=button], [role=link], [role=tab], [role=tabpanel], [role=gridcell]');
+    const focusableNodes = document.querySelectorAll('a, button, input, textarea, select, [tabindex], [role=button], [role=link], [role=tab], [role=tabpanel], [role=gridcell]');
 
     function handleFocusedElement(e){
         if (e.key == "Tab" && focusableNodes.length){
