@@ -6,13 +6,15 @@ javascript:(function () {
         return;
     }
     
-    const focusableNodes = document.querySelectorAll('a, button, input, textarea, select, div[role=button], div[role=link], div[role=tab], div[role=tabpanel]');
+    const focusableNodes = document.querySelectorAll('a, button, input, textarea, select, [tabindex="0"], [role=button], [role=link], [role=tab], [role=tabpanel]');
 
     window.addEventListener('keyup', function(e){
         if (e.key == "Tab" && focusableNodes.length){
             for (const fn of focusableNodes) {
                 if(document.activeElement == fn){
                     fn.className = 'bookMarklet';
+                    fn.style.border = '2px, solid, red';
+                    fn.style.color = 'red';
                     console.log("Focused element: ", fn);
                 }
             }
@@ -21,9 +23,11 @@ javascript:(function () {
     
     window.addEventListener('keydown', function(e){
         if (e.key == "Tab"){
-            if (e.target.getAttribute("class") === 'bookMarklet'){
-                e.target.removeAttribute('class');
-                console.log("removed class from", e.target);
+            var unfocusedElem = e.target;
+            if (unfocusedElem.getAttribute("class") === 'bookMarklet'){
+                unfocusedElem.removeAttribute('class');
+                unfocusedElem.removeAttribute('style');
+                console.log("removed attributes from", unfocusedElem);
             }
         }
     });
