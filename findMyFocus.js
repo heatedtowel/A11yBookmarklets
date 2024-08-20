@@ -1,14 +1,19 @@
 javascript:(function () {
     const existingNode = document.querySelector(".bookMarklet");
     if (existingNode) {
+        console.log("clearing");
         existingNode.classList.remove("bookMarklet");
-        isFocusEnabled = false;
+        existingNode.removeAttribute('style');
+        window.removeEventListener('keyup', handleFocusedElement);
+        window.removeEventListener('keydown', revertUnfocusedElement);
+        console.log("cleared all");
         return;
     }
-    
-    const focusableNodes = document.querySelectorAll('a, button, input, textarea, select, [tabindex="0"], [role=button], [role=link], [role=tab], [role=tabpanel]');
 
-    window.addEventListener('keyup', function(e){
+
+    const focusableNodes = document.querySelectorAll('a, button, input, textarea, select, [tabindex="0"], [role=button], [role=link], [role=tab], [role=tabpanel], [role=gridcell]');
+
+    function handleFocusedElement(e){
         if (e.key == "Tab" && focusableNodes.length){
             for (const fn of focusableNodes) {
                 if(document.activeElement == fn){
@@ -19,18 +24,18 @@ javascript:(function () {
                 }
             }
         }
-    });
-    
-    window.addEventListener('keydown', function(e){
+    }
+    function revertUnfocusedElement(e){
         if (e.key == "Tab"){
             var unfocusedElem = e.target;
             if (unfocusedElem.getAttribute("class") === 'bookMarklet'){
-                unfocusedElem.removeAttribute('class');
+                unfocusedElem.classList.remove('bookMarklet');
                 unfocusedElem.removeAttribute('style');
                 console.log("removed attributes from", unfocusedElem);
             }
         }
-    });
-
-
+    }
+    
+    window.addEventListener('keyup', handleFocusedElement);
+    window.addEventListener('keydown', revertUnfocusedElement);
 })();
