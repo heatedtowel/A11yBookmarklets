@@ -210,11 +210,9 @@ javascript:(function () {
 
                 let titleElement = buildAdditionalInfo('h3', 'black', 'Additional Information', 'bookmarklet', 'infoTitle');
                 titleElement.style.alignSelf = 'center';
-                let elementName = buildAdditionalInfo('p', 'black', currentElement.textContent, 'bookmarklet', 'infoTitle');
                 let typeElement = buildAdditionalInfo('p', 'black', `Element Type: ${currentElement.localName}`, 'bookmarklet', 'infoTitle');
                 let attributeElement = buildAdditionalInfo('p', 'black', `Element Attributes`, 'bookmarklet', 'infoTitle');
                 infoContainer.appendChild(titleElement);
-                infoContainer.appendChild(elementName);
                 infoContainer.appendChild(typeElement);
                 infoContainer.appendChild(attributeElement);
 
@@ -234,7 +232,7 @@ javascript:(function () {
                 passElement.addEventListener('mouseleave', () => {
                     currentElement.style.border = 'initial';
 
-                    let elementsToRemove = document.querySelectorAll('passedContainer');
+                    let elementsToRemove = document.querySelectorAll('#passedContainer');
         
                     for (const element in elementsToRemove) {
                         elementsToRemove[element].remove();
