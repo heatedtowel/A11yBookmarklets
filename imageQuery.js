@@ -188,16 +188,18 @@ javascript:(function () {
 
     const imageQuery = (nodesToQuery) => {
         const attributesToQuery = ['aria-label', 'aria-hidden', 'alt', 'role'];
+        const imgAttributesToQuery = ['aria-label', 'aria-hidden', 'alt',];
         const rolesToQuery = ['img', 'graphics-document', 'graphics-symbol', 'role'];
 
         for (const element in nodesToQuery) {
             if (element === 'entries') break;
 
             let currentElement = nodesToQuery[element];
+            let elementType = currentElement.localName;
             let elementAttributes = currentElement.getAttributeNames();
             let roleType = currentElement.getAttribute('role');
 
-            if (elementAttributes.map(attribute => attributesToQuery.includes(attribute)) || roleType.map(type => rolesToQuery.includes(type))) {
+            if (elementAttributes.some(attribute => imgAttributesToQuery.includes(attribute)) || rolesToQuery.includes(roleType)) {
                 let passElement = buildElement('div', 'green', '&#9432', 'bookMarklet', 'rgb(255, 255, 255, .8)', 'absolute');
                 let infoContainer = buildElement('div', 'black', '', 'bookMarklet', 'white', 'absolute', 'passedContainer');
                 infoContainer.style.display = 'flex';
