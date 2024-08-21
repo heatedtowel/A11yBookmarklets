@@ -95,6 +95,8 @@ javascript:(function () {
 
         for (const option in options) {
             let optionContainer = document.createElement('div');
+            optionContainer.style.display = 'flex';
+            
             let newOption = document.createElement('input');
             newOption.type =  'checkbox';
             newOption.id =  option;
@@ -184,6 +186,10 @@ javascript:(function () {
         overlay.appendChild(checkboxContainer);
         overlay.appendChild(btnContainer);
         document.body.appendChild(overlay);
+    };
+
+    const gatherNodesToScan = (params) => {
+        return document.querySelectorAll(params);
     };
 
     const imageQuery = (nodesToQuery) => {
@@ -292,10 +298,6 @@ javascript:(function () {
                 }
             }
         }
-    };
-
-    const gatherNodesToScan = (params) => {
-        return document.querySelectorAll(params);
     };
 
     const logResults = (passedNodes, failedNodes) => {
