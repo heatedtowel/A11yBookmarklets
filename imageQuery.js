@@ -50,7 +50,12 @@ javascript:(function () {
     };
 
     const displayOverlay = () => {
-        let options = ['All', 'Images', `Elements with role='image'`, 'svg'];
+        const options = {
+            'All': 'img:not([role]), [role=img], svg',
+            'Images': 'img:not([role])',
+            'Elements With Role of Image': '[role=img]',
+            'svg': 'svg',
+        };
 
         let overlay = document.createElement('div');
         overlay.className = 'bookMarklet';
@@ -88,13 +93,13 @@ javascript:(function () {
         checkboxContainer.style.alignItems = 'flex-start';
         checkboxContainer.style.justifyContent = 'center';
 
-        options.map(option => {
+        for (const option in options) {
             let optionContainer = document.createElement('div');
             let newOption = document.createElement('input');
             newOption.type =  'checkbox';
             newOption.id =  option;
             newOption.name =  'imageTypes';
-            newOption.value = option;
+            newOption.value = options[option];
 
             let optionLabel = document.createElement('label');
             optionLabel.setAttribute('for', `${option}`);
@@ -105,18 +110,18 @@ javascript:(function () {
             if (option === 'All') {
                 newOption.addEventListener('change', (e) => {
                     if (e.target.checked) {
-                        options.map(option => {
+                        for (const option in options) {
                             let currentSelection = document.getElementById(option);
                             if (currentSelection.value != 'All') {
                                 currentSelection.setAttribute('disabled', 'true');
                             }
-                        });
+                        };
                         return;
                     }
-                    options.map(option => {
+                    for (const option in options) {
                         let currentSelection = document.getElementById(option);
                             currentSelection.removeAttribute('disabled');
-                    });
+                    };
                 })
             }
 
@@ -125,7 +130,7 @@ javascript:(function () {
             optionContainer.appendChild(optionLabel);
 
             checkboxContainer.appendChild(optionContainer)
-        });
+        };
 
         let btnContainer = document.createElement('div');
         btnContainer.style.display = 'flex';
@@ -141,7 +146,7 @@ javascript:(function () {
 
         scanBtn.addEventListener('click' , () => {
             let totalQueries = 0;
-            options.map(option => {
+            for (const option in options) {
                 let currentSelection = document.getElementById(option);
 
                 if (currentSelection.checked) {
@@ -155,7 +160,7 @@ javascript:(function () {
                     currentSelection.setAttribute('disabled', 'true');
                     scanBtn.disabled = 'true';
                 }
-            });
+            };
             logResults(passedNodes, failedNodes);
         });
 
@@ -210,12 +215,14 @@ javascript:(function () {
 
                 let titleElement = buildAdditionalInfo('h3', 'black', 'Additional Information', 'bookmarklet', 'infoTitle');
                 titleElement.style.alignSelf = 'center';
+
                 let typeElement = buildAdditionalInfo('p', 'black', `Element Type: ${currentElement.localName}`, 'bookmarklet', 'infoTitle');
+
                 let attributeElement = buildAdditionalInfo('p', 'black', `Element Attributes`, 'bookmarklet', 'infoTitle');
+
                 infoContainer.appendChild(titleElement);
                 infoContainer.appendChild(typeElement);
                 infoContainer.appendChild(attributeElement);
-
 
                 elementAttributes.map(attribute => {
                         let attributeValue = currentElement.getAttribute(attribute);
@@ -273,31 +280,8 @@ javascript:(function () {
         }
     };
 
-    const gatherNodesToScan = (elementType) => {
-        let nodeList;
-
-        if (elementType === 'Images') {
-            nodeList = document.querySelectorAll("img:not([role])");
-        }
-
-        if (elementType === 'Elements with role = image') {
-            nodeList = document.querySelectorAll("[role=img]");
-        }
-
-        if (elementType === 'svg') {
-            nodeList = document.querySelectorAll("svg");
-        }
-
-        if (elementType === 'All') {
-            nonImgNodes = document.querySelectorAll("[role=img]");
-            imgNodes = document.querySelectorAll("img:not([role])");
-            svgNodes = document.querySelectorAll("svg");
-
-
-            nodeList = [...nonImgNodes, ...imgNodes, ...svgNodes];
-
-        }
-        return nodeList;
+    const gatherNodesToScan = (params) => {
+        return document.querySelectorAll(params);
     };
 
     const logResults = (passedNodes, failedNodes) => {
