@@ -13,7 +13,7 @@ javascript:(function () {
         displayOverlay();
     };
 
-    let passedNodes = [];
+    let passedNodes = {};
     let failedNodes = [];
 
     const buildElement = (type, color, text, className = 'bookMarklet', backgroundColor = 'white', position = 'static', id = null) => {
@@ -52,9 +52,9 @@ javascript:(function () {
     const displayOverlay = () => {
         const options = {
             'All': 'img:not([role]), [role=img], svg',
-            'Images': 'img:not([role])',
-            'Elements With Role of Image': '[role=img]',
-            'svg': 'svg',
+            'Img elements': 'img:not([role])',
+            'Elements with a role of image': '[role=img]',
+            'svg elements': 'svg',
         };
 
         let overlay = document.createElement('div');
@@ -247,7 +247,13 @@ javascript:(function () {
                 });
         
                 currentElement.before(passElement);
-                passedNodes.push(currentElement);
+
+                if (!Object.hasOwn(passedNodes, `${currentElement.localName}`)) {
+                    passedNodes[`${currentElement.localName}`] = [currentElement];
+                }
+                else {
+                    passedNodes[`${currentElement.localName}`].push(currentElement);
+                }
             }
             else {      
                 let failElement = buildElement('div', 'red', '&#9432', 'bookMarklet', 'rgb(255, 255, 255, .8)', 'absolute');
@@ -275,7 +281,13 @@ javascript:(function () {
                 });
         
                 currentElement.before(failElement);
-                failedNodes.push(currentElement);
+
+                if (!Object.hasOwn(failedNodes, `${currentElement.localName}`)) {
+                    failedNodes[`${currentElement.localName}`] = [currentElement];
+                }
+                else {
+                    failedNodes[`${currentElement.localName}`].push(currentElement);
+                }
             }
         }
     };
@@ -286,17 +298,27 @@ javascript:(function () {
 
     const logResults = (passedNodes, failedNodes) => {
         let resultsElement = document.getElementById('scanResults');
+        let totalNodesScanned = 0;
 
-        resultsElement.textContent = `${passedNodes.length + failedNodes.length} nodes scanned`;
+        for (const prop in passedNodes) {
+            totalNodesScanned += (passedNodes[prop].length);
+        };
+
+        resultsElement.textContent = `${totalNodesScanned} nodes scanned`;
 
         console.log('Start of image query');
         console.group('Elements');
         console.groupCollapsed('Passed Elements');
         
         if (passedNodes.length != 0) {
-            passedNodes.map(element => {
-            console.log('Passed', element);
-        });
+            for (const type in passedNodes) {
+                console.groupCollapsed(type);
+
+                passedNodes[type].map(element => {
+                    console.log(element);
+                });
+                console.groupEnd();
+            }
         }
         else {
             console.log('No Elements to display');
@@ -306,9 +328,14 @@ javascript:(function () {
         console.groupCollapsed('Failed Elements');
 
         if (failedNodes.length != 0) {
-            failedNodes.map(element => {
-            console.log('Failed', element);
-        });
+            for (const type in failedNodes) {
+                console.groupCollapsed(type);
+
+                failedNodes[type].map(element => {
+                    console.log(element);
+                });
+                console.groupEnd();
+            }
         }
         else {
             console.log('No Elements to display');
