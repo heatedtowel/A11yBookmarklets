@@ -14,7 +14,7 @@ javascript:(function () {
     };
 
     let passedNodes = {};
-    let failedNodes = [];
+    let failedNodes = {};
 
     const buildElement = (type, color, text, className = 'bookMarklet', backgroundColor = 'white', position = 'static', id = null) => {
         const newElement = document.createElement(`${type}`);
@@ -309,8 +309,8 @@ javascript:(function () {
         console.log('Start of image query');
         console.group('Elements');
         console.groupCollapsed('Passed Elements');
-        
-        if (passedNodes.length != 0) {
+
+        if (Object.keys(passedNodes).length != 0) {
             for (const type in passedNodes) {
                 console.groupCollapsed(type);
 
@@ -327,7 +327,7 @@ javascript:(function () {
         console.groupEnd();
         console.groupCollapsed('Failed Elements');
 
-        if (failedNodes.length != 0) {
+        if (Object.keys(failedNodes).length != 0) {
             for (const type in failedNodes) {
                 console.groupCollapsed(type);
 
@@ -340,7 +340,6 @@ javascript:(function () {
         else {
             console.log('No Elements to display');
         }
-
         console.groupEnd();
         console.groupEnd();
     };
