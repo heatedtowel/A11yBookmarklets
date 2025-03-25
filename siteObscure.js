@@ -24,8 +24,9 @@ const displayOverlay = () => {
     overlay.style.height = '100%';
     overlay.style.backgroundColor = '#000000';
     overlay.style.display = 'flex';
+    overlay.style.zIndex = '100';
 
-    document.body.appendChild(overlay);
+    document.body.prepend(overlay);
 };
 
 checkForExistingBookmarklets();
