@@ -33,6 +33,8 @@ const displayOverlay = () => {
     peekButton.style.right = '30px';
     peekButton.style.width = '60px';
     peekButton.style.height = '30px';
+    peekButton.style.borderRadius = '5px';
+    peekButton.style.border = '2px solid black';
     peekButton.style.color = 'black';
     peekButton.style.backgroundColor = '#FFFFFF';
     peekButton.style.zIndex = '100';
