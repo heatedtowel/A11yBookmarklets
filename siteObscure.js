@@ -26,6 +26,26 @@ const displayOverlay = () => {
     overlay.style.display = 'flex';
     overlay.style.zIndex = '100';
 
+    let peekButton = document.createElement('button');
+    peekButton.className = 'bookMarklet';
+    peekButton.style.position = 'fixed';
+    peekButton.style.top = '30px';
+    peekButton.style.right = '30px';
+    peekButton.style.width = '60px';
+    peekButton.style.height = '30px';
+    peekButton.style.color = 'black';
+    peekButton.style.backgroundColor = '#FFFFFF';
+    peekButton.style.zIndex = '100';
+    peekButton.innerHTML = 'Peek';
+
+    peekButton.addEventListener('click', () => {
+        overlay.style.backgroundColor = '';
+        setTimeout(() => {
+            overlay.style.backgroundColor = '#000000';
+        },'2000')
+    });
+
+    overlay.append(peekButton);
     document.body.prepend(overlay);
 };
 
